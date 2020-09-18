@@ -17,6 +17,8 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
 
+	projectiles.clear();
+
 }
 
 void GameLayer::processControls() {
@@ -27,7 +29,10 @@ void GameLayer::processControls() {
 
 	// Shooting
 	if (controlShoot) {
-
+		Projectile* newProjectile = player->shoot();
+		if (newProjectile != NULL) {
+			projectiles.push_back(newProjectile);
+		}
 	}
 
 	// Movement - Axis X
@@ -59,6 +64,9 @@ void GameLayer::update() {
 	for (auto const& enemy : enemies) {
 		enemy->update();
 	}
+	for (auto const& projectile : projectiles) {
+		projectile->update();
+	}
 
 	// Collisions
 	for (auto const& enemy : enemies) {
@@ -77,6 +85,9 @@ void GameLayer::draw() {
 
 	for (auto const& enemy : enemies) {
 		enemy->draw();
+	}
+	for (auto const& projectile : projectiles) {
+		projectile->draw();
 	}
 
 	SDL_RenderPresent(game->renderer);
