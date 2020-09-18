@@ -12,10 +12,42 @@ void GameLayer::init() {
 }
 
 void GameLayer::processControls() {
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		keysToControls(event);
+	}
+
+	// Shooting
+	if (controlShoot) {
+
+	}
+
+	// Movement - Axis X
+	if (controlMoveX > 0) {
+		player->moveX(1);
+	}
+	else if (controlMoveX < 0) {
+		player->moveX(-1);
+	}
+	else {
+		player->moveX(0);
+	}
+
+	// Movement - Axis Y
+	if (controlMoveY > 0) {
+		player->moveY(1);
+	}
+	else if (controlMoveY < 0) {
+		player->moveY(-1);
+	}
+	else {
+		player->moveY(0);
+	}
 
 }
 
 void GameLayer::update() {
+	player->update();
 	cout << "update GameLayer" << endl;
 }
 
@@ -23,4 +55,60 @@ void GameLayer::draw() {
 	background->draw();
 	player->draw();
 	SDL_RenderPresent(game->renderer);
+}
+
+void GameLayer::keysToControls(SDL_Event event) {
+	if (event.type == SDL_KEYDOWN) {
+		int code = event.key.keysym.sym;
+		// Movement
+		switch (code) {
+		case SDLK_d:
+			controlMoveX = 1;
+			break;
+		case SDLK_a:
+			controlMoveX = -1;
+			break;
+		case SDLK_w:
+			controlMoveY = -1;
+			break;
+		case SDLK_s:
+			controlMoveY = 1;
+			break;
+		// Shoot
+		case SDLK_SPACE:
+			controlShoot = true;
+			break;
+		}
+	}
+	if (event.type == SDL_KEYUP) {
+		int code = event.key.keysym.sym;
+		// Movement
+		switch (code) {
+		case SDLK_d:
+			if (controlMoveX == 1) {
+				controlMoveX = 0;
+			}
+			break;
+		case SDLK_a:
+			if (controlMoveX == -1) {
+				controlMoveX = 0;
+			}
+			break;
+		case SDLK_w:
+			if (controlMoveY == -1) {
+				controlMoveY = 0;
+			}
+			break;
+		case SDLK_s:
+			if (controlMoveY == 1) {
+				controlMoveY = 0;
+			}
+			break;
+			// Shoot
+		case SDLK_SPACE:
+			controlShoot = false;
+			break;
+		}
+	}
+
 }
