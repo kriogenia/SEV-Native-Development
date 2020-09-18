@@ -2,9 +2,9 @@
 
 #include "Game.h"
 
-class Actor
-{
-	Actor(string filename, float x, float y, int width, int height, int fileWidth, int fileHeight);
+class Actor {
+public:
+	Actor(string filename, float x, float y, int width, int height, Game* game);
 	virtual void draw();
 
 	SDL_Texture* texture;
@@ -19,4 +19,3 @@ class Actor
 
 	Game* game;
 };
-
