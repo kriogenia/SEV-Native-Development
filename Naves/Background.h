@@ -4,6 +4,7 @@
 
 class Background : public Actor
 {
-	Background
+public:
+	Background(string filename, float x, float y, Game* game);
 };
 
