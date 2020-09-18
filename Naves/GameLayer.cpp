@@ -6,8 +6,16 @@ GameLayer::GameLayer(Game* game)
 }
 
 void GameLayer::init() {
+
+	delete background;
 	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
+
+	delete player;
 	player = new Player(50, 50, game);
+
+	enemies.clear();
+	enemies.push_back(new Enemy(300, 50, game));
+	enemies.push_back(new Enemy(300, 200, game));
 
 }
 
@@ -48,12 +56,29 @@ void GameLayer::processControls() {
 
 void GameLayer::update() {
 	player->update();
+	for (auto const& enemy : enemies) {
+		enemy->update();
+	}
+
+	// Collisions
+	for (auto const& enemy : enemies) {
+		if (player->isOverlap(enemy)) {
+			init();
+			return;
+		}
+	}
+
 	cout << "update GameLayer" << endl;
 }
 
 void GameLayer::draw() {
 	background->draw();
 	player->draw();
+
+	for (auto const& enemy : enemies) {
+		enemy->draw();
+	}
+
 	SDL_RenderPresent(game->renderer);
 }
 
@@ -104,7 +129,7 @@ void GameLayer::keysToControls(SDL_Event event) {
 				controlMoveY = 0;
 			}
 			break;
-			// Shoot
+		// Shoot
 		case SDLK_SPACE:
 			controlShoot = false;
 			break;
