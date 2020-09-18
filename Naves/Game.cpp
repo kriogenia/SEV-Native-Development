@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameLayer.h"
 
 Game::Game() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -11,6 +12,8 @@ Game::Game() {
 	// Quality image rendering 
 	// https://wiki.libsdl.org/SDL_HINT_RENDER_SCALE_QUALITY
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
+	gameLayer = new GameLayer(this);
 
 	loopActive = true;
 	loop();
@@ -25,8 +28,11 @@ void Game::loop() {
 		initTick = SDL_GetTicks();
 
 		// Controls
+		gameLayer->processControls();
 		// Update elements
+		gameLayer->update();
 		// Draw
+		gameLayer->draw();
 
 		endTick = SDL_GetTicks();
 		differenceTick = endTick - initTick;

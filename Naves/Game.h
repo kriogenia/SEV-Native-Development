@@ -6,6 +6,9 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
+#include "Layer.h"
+class Layer;
+
 using namespace std;
 
 // Screen size constants
@@ -20,4 +23,6 @@ public:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	bool loopActive;
+	Layer* gameLayer;
+
 };
