@@ -12,6 +12,9 @@ Actor::Actor(string filename, float x, float y, int width, int height, Game* gam
 	// Game size
 	this->width = width;
 	this->height = height;
+	// Speed
+	this->vx = 0;
+	this->vy = 0;
 }
 
 void Actor::draw() {
@@ -28,6 +31,10 @@ void Actor::draw() {
 	destination.h = height;
 
 	SDL_RenderCopyEx(game->renderer, texture, &source, &destination, 0, nullptr, SDL_FLIP_NONE);
+}
+
+bool Actor::isOut() {
+	return false;
 }
 
 bool Actor::isOverlap(Actor* actor) {

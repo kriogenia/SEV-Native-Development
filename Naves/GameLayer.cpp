@@ -19,6 +19,8 @@ void GameLayer::init() {
 
 	projectiles.clear();
 
+	killCount = 0;
+
 }
 
 void GameLayer::processControls() {
@@ -60,6 +62,16 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
+	// Enemy generation
+	newEnemyTime--;
+	if (newEnemyTime <= 0) {
+		int rX = (rand() % (600 - 500)) + 1 + 500;
+		int rY = (rand() % (300 - 60)) + 1 + 60;
+		enemies.push_back(new Enemy(rX, rY, game));
+		newEnemyTime = killCount*5 > 110 ? 10 : 110 - killCount*5;
+	}
+
+	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
@@ -76,12 +88,27 @@ void GameLayer::update() {
 		}
 	}
 
-	// Collisions - Projectile, Enemy
+	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
 
 	for (auto const& enemy : enemies) {
+
+		// Enemy traveledOut
+		if (enemy->isOut()) {
+			bool eInList = std::find(deleteEnemies.begin(),
+				deleteEnemies.end(),
+				enemy) != deleteEnemies.end();
+			if (!eInList) {
+				deleteEnemies.push_back(enemy);
+				cout << "Enemy traveled out" << endl;
+			}
+			continue;
+		}
+
+		// Collision - Projectile, Enemy
 		for (auto const& projectile : projectiles) {
+
 			if (enemy->isOverlap(projectile)) {
 				bool pInList = std::find(deleteProjectiles.begin(),
 					deleteProjectiles.end(),
@@ -97,10 +124,29 @@ void GameLayer::update() {
 
 				if (!eInList) {
 					deleteEnemies.push_back(enemy);
+					killCount++;
+					cout << "Enemy killed. Kill count: " << killCount << endl;
 				}
 
 			}
 		}
+	}
+
+	for (auto const& projectile : projectiles) {
+
+		// Projectile traveledOut
+		if (projectile->isOut()) {
+			bool pInList = std::find(deleteProjectiles.begin(),
+				deleteProjectiles.end(),
+				projectile) != deleteProjectiles.end();
+
+			if (!pInList) {
+				deleteProjectiles.push_back(projectile);
+				cout << "Projectile traveled out" << endl;
+			}
+			continue;
+		}
+
 	}
 
 	// Deletion of enemies and projectiles
@@ -113,10 +159,6 @@ void GameLayer::update() {
 		projectiles.remove(delProjectile);
 	}
 	deleteProjectiles.clear();
-
-
-
-	cout << "update GameLayer" << endl;
 }
 
 void GameLayer::draw() {

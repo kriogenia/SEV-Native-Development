@@ -8,3 +8,7 @@ Projectile::Projectile(float x, float y, Game* game)
 void Projectile::update() {
 	x = x + vx;
 }
+
+bool Projectile::isOut() {
+	return x >= WIDTH;
+}

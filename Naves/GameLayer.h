@@ -28,5 +28,8 @@ public:
 	bool controlShoot = false;
 	int controlMoveX = 0;
 	int controlMoveY = 0;
+	int newEnemyTime = 0;
+	int killCount = 0;
+
 };
 
