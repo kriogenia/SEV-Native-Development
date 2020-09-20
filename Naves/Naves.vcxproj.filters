@@ -54,6 +54,9 @@
     <ClCompile Include="Projectile.cpp">
       <Filter>Archivos de origen\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="PickUp.cpp">
+      <Filter>Archivos de origen\Actors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -78,6 +81,9 @@
       <Filter>Archivos de encabezado\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
+      <Filter>Archivos de encabezado\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="PickUp.h">
       <Filter>Archivos de encabezado\Actors</Filter>
     </ClInclude>
   </ItemGroup>

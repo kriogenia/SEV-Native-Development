@@ -5,6 +5,7 @@
 #include "Background.h"
 #include "Enemy.h"
 #include "Projectile.h"
+#include "PickUp.h"
 
 #include <list>
 
@@ -24,12 +25,14 @@ public:
 	Background* background;
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;
+	list<PickUp*> pickups;
 
 	bool controlShoot = false;
 	int controlMoveX = 0;
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
 	int killCount = 0;
+	int newPickUpTime = 0;
 
 };
 

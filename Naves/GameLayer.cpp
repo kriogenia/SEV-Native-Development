@@ -18,6 +18,7 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 200, game));
 
 	projectiles.clear();
+	pickups.clear();
 
 	killCount = 0;
 
@@ -69,6 +70,17 @@ void GameLayer::update() {
 		int rY = (rand() % (300 - 60)) + 1 + 60;
 		enemies.push_back(new Enemy(rX, rY, game));
 		newEnemyTime = killCount*5 > 110 ? 10 : 110 - killCount*5;
+		cout << "Enemy spawned at " << rX << ", " << rY << endl;
+	}
+
+	// PickUp generation
+	newPickUpTime--;
+	if (newPickUpTime <= 0) {
+		int rX = (rand() % (WIDTH - 50)) + 1 + 25;
+		int rY = (rand() % (HEIGHT - 50)) + 1 + 25;
+		pickups.push_back(new PickUp("res/moneda.png", rX, rY, game));
+		cout << "PickUp spawned at " << rX << ", " << rY << endl;
+		newPickUpTime = 150;
 	}
 
 	// Actors update
@@ -80,6 +92,11 @@ void GameLayer::update() {
 		projectile->update();
 	}
 
+	// Deletions - Enemy, PickUp, Projectile
+	list<Enemy*> deleteEnemies;
+	list<PickUp*> deletePickUps;
+	list<Projectile*> deleteProjectiles;
+
 	// Collisions - Player, Enemy
 	for (auto const& enemy : enemies) {
 		if (player->isOverlap(enemy)) {
@@ -88,9 +105,19 @@ void GameLayer::update() {
 		}
 	}
 
-	// Deletions - Projectile, Enemy
-	list<Enemy*> deleteEnemies;
-	list<Projectile*> deleteProjectiles;
+	// Collisions - Player, PickUp
+	for (auto const& pickup : pickups) {
+		if (player->isOverlap(pickup)) {
+			bool pInList = std::find(deletePickUps.begin(),
+				deletePickUps.end(),
+				pickup) != deletePickUps.end();
+			if (!pInList) {
+				deletePickUps.push_back(pickup);
+				cout << "Elemented picked up" << endl;
+			}
+			continue;
+		}
+	}
 
 	for (auto const& enemy : enemies) {
 
@@ -149,11 +176,16 @@ void GameLayer::update() {
 
 	}
 
-	// Deletion of enemies and projectiles
+	// Deletion of enemies, pickups projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 	}
 	deleteEnemies.clear();
+
+	for (auto const& delPickup : deletePickUps) {
+		pickups.remove(delPickup);
+	}
+	deletePickUps.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
@@ -167,6 +199,9 @@ void GameLayer::draw() {
 
 	for (auto const& enemy : enemies) {
 		enemy->draw();
+	}
+	for (auto const& pickup : pickups) {
+		pickup->draw();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->draw();
