@@ -183,6 +183,9 @@ void GameLayer::keysToControls(SDL_Event event) {
 		case SDLK_ESCAPE:
 			game->loopActive = false;
 			break;
+		case SDLK_1:
+			game->scale();
+			break;
 		case SDLK_d:
 			controlMoveX = 1;
 			break;

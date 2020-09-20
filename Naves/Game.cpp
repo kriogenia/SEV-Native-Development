@@ -41,5 +41,31 @@ void Game::loop() {
 			SDL_Delay((1000 / 30) - differenceTick);
 		}
 	}
+}
+
+void Game::scale() {
+	scaledToMax = !scaledToMax;
+
+	if (scaledToMax) {
+		SDL_DisplayMode PCdisplay;
+		SDL_GetCurrentDisplayMode(0, &PCdisplay);
+		float scaleX = (float)PCdisplay.w / (float)WIDTH;
+		float scaleY = (float)PCdisplay.h / (float)HEIGHT;
+		// We get the lower of the two scales
+		scaleLower = scaleX;
+		if (scaleY < scaleX) {
+			scaleLower = scaleY;
+		}
+		// Change window size and render scale
+		SDL_SetWindowSize(window, WIDTH * scaleLower, HEIGHT * scaleLower);
+		SDL_RenderSetScale(renderer, scaleLower, scaleLower);
+	}
+	else { 
+		scaleLower = 1;
+		// Change window size and render scale
+		SDL_SetWindowSize(window, WIDTH, HEIGHT);
+		SDL_RenderSetScale(renderer, 1, 1);
+	}
 
 }
+
