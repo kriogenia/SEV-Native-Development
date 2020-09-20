@@ -180,6 +180,9 @@ void GameLayer::keysToControls(SDL_Event event) {
 		int code = event.key.keysym.sym;
 		// Movement
 		switch (code) {
+		case SDLK_ESCAPE:
+			game->loopActive = false;
+			break;
 		case SDLK_d:
 			controlMoveX = 1;
 			break;
@@ -228,5 +231,9 @@ void GameLayer::keysToControls(SDL_Event event) {
 			break;
 		}
 	}
+	if (event.type == SDL_QUIT) {
+		game->loopActive = false;
+	}
+
 
 }
