@@ -36,8 +36,9 @@ void Player::moveY(float direction) {
 }
 
 Projectile* Player::shoot() {
-	if (shootTime == 0) {
+	if (shootTime == 0 && shots > 0) {
 		shootTime = shootCadence;
+		shots--;
 		return new Projectile(x, y, game);
 	}
 	else {

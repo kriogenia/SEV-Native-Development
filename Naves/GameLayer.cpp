@@ -80,7 +80,7 @@ void GameLayer::update() {
 		int rY = (rand() % (HEIGHT - 50)) + 1 + 25;
 		pickups.push_back(new PickUp("res/moneda.png", rX, rY, game));
 		cout << "PickUp spawned at " << rX << ", " << rY << endl;
-		newPickUpTime = 150;
+		newPickUpTime = 100;
 	}
 
 	// Actors update
@@ -108,6 +108,7 @@ void GameLayer::update() {
 	// Collisions - Player, PickUp
 	for (auto const& pickup : pickups) {
 		if (player->isOverlap(pickup)) {
+			player->shots++;
 			bool pInList = std::find(deletePickUps.begin(),
 				deletePickUps.end(),
 				pickup) != deletePickUps.end();

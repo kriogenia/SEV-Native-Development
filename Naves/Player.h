@@ -15,6 +15,7 @@ public:
 
 	int shootCadence = 30;
 	int shootTime = 0;
+	int shots = 10;
 
 };
 
