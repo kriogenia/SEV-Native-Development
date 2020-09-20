@@ -8,5 +8,7 @@ public:
 	Enemy(float x, float y, Game* game);
 	void update();
 	bool isOut() override;
+
+	int hp = 3;
 };
 

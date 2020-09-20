@@ -145,15 +145,18 @@ void GameLayer::update() {
 				if (!pInList) {
 					deleteProjectiles.push_back(projectile);
 				}
+				// Enemy killed if HP reaches 0
+				enemy->hp--;
+				if (enemy->hp == 0) {
+					bool eInList = std::find(deleteEnemies.begin(),
+						deleteEnemies.end(),
+						enemy) != deleteEnemies.end();
 
-				bool eInList = std::find(deleteEnemies.begin(),
-					deleteEnemies.end(),
-					enemy) != deleteEnemies.end();
-
-				if (!eInList) {
-					deleteEnemies.push_back(enemy);
-					killCount++;
-					cout << "Enemy killed. Kill count: " << killCount << endl;
+					if (!eInList) {
+						deleteEnemies.push_back(enemy);
+						killCount++;
+						cout << "Enemy killed. Kill count: " << killCount << endl;
+					}
 				}
 
 			}
