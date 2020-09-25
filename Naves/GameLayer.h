@@ -2,6 +2,7 @@
 
 #include "Audio.h"
 #include "Background.h"
+#include "Bomb.h"
 #include "Enemy.h"
 #include "Layer.h"
 #include "Player.h"
@@ -30,11 +31,13 @@ public:
 
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;
+	list<Bomb*> bombs;
 
 	bool controlShoot = false;
 	int controlMoveX = 0;
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
+	int newBombTime = 500;
 	int points = 0;
 
 };

@@ -4,6 +4,7 @@
 Player::Player(float x, float y, Game* game)
 	: Actor("res/jugador.png", x, y, 50, 57, game) {
 
+	delete audioShoot;
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
 
 }

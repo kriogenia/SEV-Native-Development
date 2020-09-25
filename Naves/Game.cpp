@@ -72,3 +72,16 @@ void Game::scale() {
 
 }
 
+SDL_Texture* Game::getTexture(string filename) {
+	if (mapTextures.find(filename) != mapTextures.end()) {
+		cout << "Returned cached resource " << filename << endl;
+	}
+	else {
+		cout << "New, must be cached " << filename << endl;
+		SDL_Surface* surface = IMG_Load(filename.c_str());
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+		mapTextures[filename] = texture;
+	}
+
+	return mapTextures[filename];
+}

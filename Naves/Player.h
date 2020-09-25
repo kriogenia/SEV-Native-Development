@@ -4,8 +4,7 @@
 #include "Audio.h"
 #include "Projectile.h"
 
-class Player : public Actor
-{
+class Player : public Actor {
 public:
 	Player(float x, float y, Game* game);
 

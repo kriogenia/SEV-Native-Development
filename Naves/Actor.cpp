@@ -3,8 +3,7 @@
 Actor::Actor(string filename, float x, float y, int width, int height, Game* game)
 	: x{ x }, y{ y }, width{ width }, height{ height }, game{ game } {
 
-	SDL_Surface* surface = IMG_Load(filename.c_str());
-	texture = SDL_CreateTextureFromSurface(game->renderer, surface);
+	texture = game->getTexture(filename);
 	// File size
 	this-> fileWidth = width;
 	this-> fileHeight = height;
@@ -14,7 +13,6 @@ Actor::Actor(string filename, float x, float y, int width, int height, Game* gam
 }
 
 Actor::~Actor() {
-	SDL_DestroyTexture(texture);
 }
 
 void Actor::draw() {

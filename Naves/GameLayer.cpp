@@ -29,6 +29,7 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 200, game));
 
 	projectiles.clear();
+	bombs.clear();
 
 }
 
@@ -82,6 +83,16 @@ void GameLayer::update() {
 		newEnemyTime = points*5 > 110 ? 10 : 110 - points*5;
 	}
 
+	//Bomb generation
+	newBombTime--;
+	if (newBombTime <= 0) {
+		int rX = (rand() % (WIDTH - 50)) + 1 + 25;
+		int rY = (rand() % (HEIGHT - 50)) + 1 + 25;
+		bombs.push_back(new Bomb(rX, rY, game));
+		cout << "Bomb spawned at " << rX << ", " << rY << endl;
+		newBombTime = 500;
+	}
+
 	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
@@ -102,6 +113,24 @@ void GameLayer::update() {
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
+	list<Bomb*> deleteBombs;
+
+	// Collisions - Player, Bomb
+
+	for (auto const& bomb : bombs) {
+		if (player->isOverlap(bomb)) {
+			bomb->explosionAudio->play();
+			points += enemies.size();
+			textPoints->content = to_string(points);
+			enemies.clear();
+			bool bInList = std::find(deleteBombs.begin(),
+				deleteBombs.end(), bomb) != deleteBombs.end();
+			if (!bInList) {
+				deleteBombs.push_back(bomb);
+				cout << "Bomb detonated" << endl;
+			}
+		}
+	}
 
 	for (auto const& enemy : enemies) {
 
@@ -161,7 +190,7 @@ void GameLayer::update() {
 
 	}
 
-	// Deletion of enemies and projectiles
+	// Deletion of bombs, enemies and projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 		delete delEnemy;
@@ -173,12 +202,22 @@ void GameLayer::update() {
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
+	for (auto const& delBomb : deleteBombs) {
+		bombs.remove(delBomb);
+		delete delBomb;
+	}
+	deleteBombs.clear();
 }
 
 void GameLayer::draw() {
+
 	background->draw();
 	player->draw();
 
+	for (auto const& bomb : bombs) {
+		bomb->draw();
+	}
 	for (auto const& enemy : enemies) {
 		enemy->draw();
 	}
