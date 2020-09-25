@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -24,11 +25,17 @@ public:
 	void loop();
 	void scale();
 
+	SDL_Texture* getTexture(string filename);
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	TTF_Font* font;
-	bool loopActive;
 	Layer* gameLayer;
+
+	map<string, SDL_Texture*> mapTextures;
+
+	bool loopActive;
+
 	bool scaledToMax = false;
 	float scaleLower = 1;
 

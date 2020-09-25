@@ -6,7 +6,7 @@ Game::Game() {
 		cout << "Error SDL_Init" << SDL_GetError() << endl;
 	}
 	if (SDL_CreateWindowAndRenderer(WIDTH, HEIGHT, 0, &window, &renderer) < 0) {
-		cout << "Error Window y Renderer" << SDL_GetError() << endl;
+		cout << "Error Window and Renderer" << SDL_GetError() << endl;
 	}
 	SDL_SetWindowTitle(window, "Juego de Naves");
 	// Quality image rendering 
@@ -72,3 +72,16 @@ void Game::scale() {
 
 }
 
+SDL_Texture* Game::getTexture(string filename) {
+	if (mapTextures.find(filename) != mapTextures.end()) {
+		cout << "Cached resource returned -> " << filename << endl;
+	}
+	else {
+		cout << "New resource to cache -> " << filename << endl;
+		SDL_Surface* surface = IMG_Load(filename.c_str());
+		SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+		mapTextures[filename] = texture;
+	}
+
+	return mapTextures[filename];
+}
