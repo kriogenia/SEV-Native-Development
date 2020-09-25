@@ -8,19 +8,32 @@ Player::Player(float x, float y, Game* game)
 	orientation = game->orientationRight;
 
 	aIdleRight = new Animation("res/jugador_idle_derecha.png", width, height,
-		320, 40, 6, 8, game);
+		320, 40, 6, 8, true, game);
 	aIdleLeft = new Animation("res/jugador_idle_izquierda.png", width, height,
-		320, 40, 6, 8, game);
+		320, 40, 6, 8, true, game);
+
 	aRunningRight = new Animation("res/jugador_corriendo_derecha.png", width, height,
-		320, 40, 6, 8, game);
+		320, 40, 6, 8, true, game);
 	aRunningLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
-		320, 40, 6, 8, game);
+		320, 40, 6, 8, true, game);
+
+	aShootingRight = new Animation("res/jugador_corriendo_derecha.png", width, height,
+		160, 40, 6, 4, false, game);
+	aShootingLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
+		160, 40, 6, 4, false, game);
+
 	animation = aIdleRight;
 
 }
 
 void Player::update() {
-	animation->update();
+	bool endAnimation = animation->update();
+
+	if (endAnimation) {
+		if (state == game->stateShooting) {
+			state = game->stateMoving;
+		}
+	}
 
 	if (vx > 0) {
 		orientation = game->orientationRight;
@@ -29,21 +42,32 @@ void Player::update() {
 		orientation = game->orientationLeft;
 	}
 
-	if (vx != 0) {
+	if (state == game->stateMoving) {
 		if (orientation == game->orientationRight) {
-			animation = aRunningRight;
+			animation = aShootingRight;
 		}
 		if (orientation == game->orientationLeft) {
-			animation = aRunningLeft;
+			animation = aShootingLeft;
 		}
 	}
 
-	if (vx == 0) {
-		if (orientation == game->orientationRight) {
-			animation = aIdleRight;
+	if (state == game->stateMoving) {
+		if (vx != 0) {
+			if (orientation == game->orientationRight) {
+				animation = aRunningRight;
+			}
+			if (orientation == game->orientationLeft) {
+				animation = aRunningLeft;
+			}
 		}
-		if (orientation == game->orientationLeft) {
-			animation = aIdleLeft;
+
+		if (vx == 0) {
+			if (orientation == game->orientationRight) {
+				animation = aIdleRight;
+			}
+			if (orientation == game->orientationLeft) {
+				animation = aIdleLeft;
+			}
 		}
 	}
 
@@ -70,7 +94,12 @@ void Player::moveY(float direction) {
 Projectile* Player::shoot() {
 	if (shootTime == 0) {
 		shootTime = shootCadence;
-		return new Projectile(x, y, game);
+		state = game->stateShooting;
+		auto projectile = new Projectile(x, y, game);
+		if (orientation == game->orientationLeft) {
+			projectile->vx = projectile->vx * -1;
+		}
+		return projectile;
 	}
 	else {
 		return NULL;

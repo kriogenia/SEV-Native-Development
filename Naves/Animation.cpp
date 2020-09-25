@@ -1,7 +1,7 @@
 #include "Animation.h"
 
 Animation::Animation(string filename, float actorWidth, float actorHeight,
-	float fileWidth, float fileHeight, int updateFrecuence, int totalFrames, Game* game) {
+	float fileWidth, float fileHeight, int updateFrecuence, int totalFrames, bool loop, Game* game) {
 
 	// Load texture
 	SDL_Surface* surface = IMG_Load(filename.c_str());
@@ -13,6 +13,7 @@ Animation::Animation(string filename, float actorWidth, float actorHeight,
 	this->fileHeight = fileHeight;
 	this->updateFrecuence = updateFrecuence;
 	this->totalFrames = totalFrames;
+	this->loop = loop;
 	this->game = game;
 
 	updateTime = 0;			// last update
@@ -37,6 +38,9 @@ bool Animation::update() {
 
 		if (currentFrame >= totalFrames) {
 			currentFrame = 0;
+			if (!loop) {
+					return true;
+			}
 		}
 	}
 
