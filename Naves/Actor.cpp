@@ -1,17 +1,13 @@
 #include "Actor.h"
 
-Actor::Actor(string filename, float x, float y, int width, int height, Game* game) {
-	this->game = game;
+Actor::Actor(string filename, float x, float y, int width, int height, Game* game)
+	: x{ x }, y{ y }, width{ width }, height{ height }, game{ game } {
+
 	SDL_Surface* surface = IMG_Load(filename.c_str());
 	texture = SDL_CreateTextureFromSurface(game->renderer, surface);
-	this-> x = x;
-	this-> y = y;
 	// File size
 	this-> fileWidth = width;
 	this-> fileHeight = height;
-	// Game size
-	this->width = width;
-	this->height = height;
 	// Speed
 	this->vx = 0;
 	this->vy = 0;

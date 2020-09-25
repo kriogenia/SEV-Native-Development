@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio.h"
 #include "Background.h"
 #include "Enemy.h"
 #include "Layer.h"
@@ -23,9 +24,8 @@ public:
 
 	Player* player;
 	Background* background;
-
 	Actor* backgroundPoints;
-	int points;
+	Audio* audioBackground;
 	Text* textPoints;
 
 	list<Enemy*> enemies;
@@ -35,7 +35,7 @@ public:
 	int controlMoveX = 0;
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
-	int killCount = 0;
+	int points = 0;
 
 };
 

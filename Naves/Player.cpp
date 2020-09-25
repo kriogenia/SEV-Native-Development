@@ -2,8 +2,9 @@
 #include "Projectile.h"
 
 Player::Player(float x, float y, Game* game)
-	: Actor("res/jugador.png", x, y, 50, 57, game)
-{
+	: Actor("res/jugador.png", x, y, 50, 57, game) {
+
+	audioShoot = new Audio("res/efecto_disparo.wav", false);
 
 }
 
@@ -25,6 +26,7 @@ void Player::moveY(float direction) {
 
 Projectile* Player::shoot() {
 	if (shootTime == 0) {
+		audioShoot->play();
 		shootTime = shootCadence;
 		return new Projectile(x, y, game);
 	}
