@@ -1,10 +1,11 @@
 #pragma once
 
-#include "Layer.h"
-#include "Player.h"
 #include "Background.h"
 #include "Enemy.h"
+#include "Layer.h"
+#include "Player.h"
 #include "Projectile.h"
+#include "Text.h"
 
 #include <list>
 
@@ -22,7 +23,10 @@ public:
 
 	Player* player;
 	Background* background;
+
 	Actor* backgroundPoints;
+	int points;
+	Text* textPoints;
 
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;

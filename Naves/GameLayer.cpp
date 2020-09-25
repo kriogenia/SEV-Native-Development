@@ -7,6 +7,8 @@ GameLayer::GameLayer(Game* game)
 
 void GameLayer::init() {
 
+	points = 0;
+
 	delete background;
 	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
 
@@ -15,14 +17,14 @@ void GameLayer::init() {
 
 	delete backgroundPoints;
 	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
+	textPoints = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
+	textPoints->content = to_string(points);
 
 	enemies.clear();
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
 
 	projectiles.clear();
-
-	killCount = 0;
 
 }
 
@@ -71,7 +73,7 @@ void GameLayer::update() {
 		int rX = (rand() % (600 - 500)) + 1 + 500;
 		int rY = (rand() % (300 - 60)) + 1 + 60;
 		enemies.push_back(new Enemy(rX, rY, game));
-		newEnemyTime = killCount*5 > 110 ? 10 : 110 - killCount*5;
+		newEnemyTime = points*5 > 110 ? 10 : 110 - points*5;
 	}
 
 	// Actors update
@@ -127,8 +129,9 @@ void GameLayer::update() {
 
 				if (!eInList) {
 					deleteEnemies.push_back(enemy);
-					killCount++;
-					cout << "Enemy killed. Kill count: " << killCount << endl;
+					points++;
+					textPoints->content = to_string(points);
+					cout << "Enemy killed. Points: " << points << endl;
 				}
 
 			}
@@ -175,6 +178,7 @@ void GameLayer::draw() {
 		projectile->draw();
 	}
 
+	textPoints->draw();
 	backgroundPoints->draw();
 
 	SDL_RenderPresent(game->renderer);

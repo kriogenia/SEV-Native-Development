@@ -26,6 +26,7 @@ public:
 
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	TTF_Font* font;
 	bool loopActive;
 	Layer* gameLayer;
 	bool scaledToMax = false;
