@@ -4,6 +4,7 @@
 #include "Background.h"
 #include "Bomb.h"
 #include "Enemy.h"
+#include "EnemyProjectile.h"
 #include "Layer.h"
 #include "Player.h"
 #include "Projectile.h"
@@ -29,9 +30,10 @@ public:
 	Audio* audioBackground;
 	Text* textPoints;
 
-	list<Enemy*> enemies;
-	list<Projectile*> projectiles;
 	list<Bomb*> bombs;
+	list<Enemy*> enemies;
+	list<EnemyProjectile*> enemyProjectiles;
+	list<Projectile*> projectiles;
 
 	bool controlShoot = false;
 	int controlMoveX = 0;

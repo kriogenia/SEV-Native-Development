@@ -24,12 +24,15 @@ void GameLayer::init() {
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
 	audioBackground->play();
 
+	bombs.clear();
+
 	enemies.clear();
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
 
+	enemyProjectiles.clear();
+
 	projectiles.clear();
-	bombs.clear();
 
 }
 
@@ -97,6 +100,16 @@ void GameLayer::update() {
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
+		if (!enemy->isOutOfRender() && enemy->x > player->x && enemy->x - player->x < 100) {
+			auto projectile = enemy->autoshoot();
+			if (projectile != NULL) {
+				cout << "Enemy did shot" << endl;
+				enemyProjectiles.push_back(projectile);
+			}
+		}
+	}
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		enemyProjectile->update();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->update();
@@ -110,8 +123,9 @@ void GameLayer::update() {
 		}
 	}
 
-	// Deletions - Projectile, Enemy
+	// Deletions - Projectiles, Enemy, Bomb
 	list<Enemy*> deleteEnemies;
+	list<EnemyProjectile*> deleteEnemyProjectiles;
 	list<Projectile*> deleteProjectiles;
 	list<Bomb*> deleteBombs;
 
@@ -132,9 +146,27 @@ void GameLayer::update() {
 		}
 	}
 
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		// Collision - EnemyProjectile, Player
+		if (player->isOverlap(enemyProjectile)) {
+			init();
+			return;
+		}
+		// EnemyProjectile traveled out
+		if (enemyProjectile->isOutOfRender()) {
+			bool pInList = std::find(deleteEnemyProjectiles.begin(),
+				deleteEnemyProjectiles.end(),
+				enemyProjectile) != deleteEnemyProjectiles.end();
+			if (!pInList) {
+				deleteEnemyProjectiles.push_back(enemyProjectile);
+				cout << "Enemy projectile traveled out" << endl;
+			}
+		}
+	}
+
 	for (auto const& enemy : enemies) {
 
-		// Enemy traveledOut
+		// Enemy traveled out
 		if (enemy->isOutOfRender()) {
 			bool eInList = std::find(deleteEnemies.begin(),
 				deleteEnemies.end(),
@@ -175,7 +207,7 @@ void GameLayer::update() {
 
 	for (auto const& projectile : projectiles) {
 
-		// Projectile traveledOut
+		// Projectile traveled out
 		if (projectile->isOutOfRender()) {
 			bool pInList = std::find(deleteProjectiles.begin(),
 				deleteProjectiles.end(),
@@ -196,6 +228,12 @@ void GameLayer::update() {
 		delete delEnemy;
 	}
 	deleteEnemies.clear();
+
+	for (auto const& delEnemyProjectile : deleteEnemyProjectiles) {
+		enemyProjectiles.remove(delEnemyProjectile);
+		delete delEnemyProjectile;
+	}
+	deleteEnemyProjectiles.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
@@ -220,6 +258,9 @@ void GameLayer::draw() {
 	}
 	for (auto const& enemy : enemies) {
 		enemy->draw();
+	}
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		enemyProjectile->draw();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->draw();
