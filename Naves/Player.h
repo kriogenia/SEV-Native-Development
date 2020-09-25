@@ -17,6 +17,8 @@ public:
 
 	int shootCadence = 30;
 	int shootTime = 0;
+	int state;
+	int orientation;
 
 	Animation* animation;
 
