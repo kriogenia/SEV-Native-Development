@@ -17,7 +17,13 @@ void GameLayer::init() {
 
 	delete backgroundPoints;
 	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
-	textPoints = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
+
+	delete audioBackground;
+	audioBackground = new Audio("res/musica_ambiente.mp3", true);
+	audioBackground->play();
+
+	delete textPoints;
+	textPoints = new Text("0", WIDTH * 0.92, HEIGHT * 0.04, game);
 	textPoints->content = to_string(points);
 
 	enemies.clear();

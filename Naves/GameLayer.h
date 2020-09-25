@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Text.h"
+#include "Audio.h"
 
 #include <list>
 
@@ -25,7 +26,7 @@ public:
 	Background* background;
 
 	Actor* backgroundPoints;
-	int points;
+	Audio* audioBackground;
 	Text* textPoints;
 
 	list<Enemy*> enemies;
@@ -35,7 +36,7 @@ public:
 	int controlMoveX = 0;
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
-	int killCount = 0;
+	int points = 0;
 
 };
 
