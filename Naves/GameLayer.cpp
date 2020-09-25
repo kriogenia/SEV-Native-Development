@@ -10,7 +10,7 @@ void GameLayer::init() {
 	points = 0;
 
 	delete background;
-	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, game);
+	background = new Background("res/fondo.png", WIDTH * 0.5, HEIGHT * 0.5, -1, game);
 
 	delete player;
 	player = new Player(50, 50, game);
@@ -67,6 +67,8 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
+	background->update();
+
 	// Enemy generation
 	newEnemyTime--;
 	if (newEnemyTime <= 0) {
