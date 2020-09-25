@@ -17,6 +17,6 @@ public:
 	Animation* aMoving;
 	Animation* animation;
 
-	int shotCadence = 50;
+	int shotCadence = (rand() % (75 - 25 )) + 1 + 25;
 };
 
