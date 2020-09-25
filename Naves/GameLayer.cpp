@@ -125,19 +125,43 @@ void GameLayer::update() {
 					deleteProjectiles.push_back(projectile);
 				}
 
-				bool eInList = std::find(deleteEnemies.begin(),
-					deleteEnemies.end(),
-					enemy) != deleteEnemies.end();
-
-				if (!eInList) {
-					deleteEnemies.push_back(enemy);
-					points++;
-					textPoints->content = to_string(points);
-					cout << "Enemy killed. Points: " << points << endl;
-				}
+				enemy->impacted();
+				points++;
+				textPoints->content = to_string(points);
+				cout << "Enemy killed. Points: " << points << endl;
 
 			}
 		}
+	}
+
+	for (auto const& enemy : enemies) {
+		if (enemy->state == game->stateDead) {
+			bool eInList = std::find(deleteEnemies.begin(),
+				deleteEnemies.end(),
+				enemy) != deleteEnemies.end();
+
+			if (!eInList) {
+				deleteEnemies.push_back(enemy);
+			}
+		}
+	}
+
+
+	for (auto const& projectile : projectiles) {
+
+		// Projectile traveledOut
+		if (projectile->isOutOfRender()) {
+			bool pInList = std::find(deleteProjectiles.begin(),
+				deleteProjectiles.end(),
+				projectile) != deleteProjectiles.end();
+
+			if (!pInList) {
+				deleteProjectiles.push_back(projectile);
+				cout << "Projectile traveled out" << endl;
+			}
+			continue;
+		}
+
 	}
 
 	for (auto const& projectile : projectiles) {

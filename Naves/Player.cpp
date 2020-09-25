@@ -17,9 +17,9 @@ Player::Player(float x, float y, Game* game)
 	aRunningLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
 		320, 40, 6, 8, true, game);
 
-	aShootingRight = new Animation("res/jugador_corriendo_derecha.png", width, height,
+	aShootingRight = new Animation("res/jugador_disparando_derecha.png", width, height,
 		160, 40, 6, 4, false, game);
-	aShootingLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
+	aShootingLeft = new Animation("res/jugador_disparando_izquierda.png", width, height,
 		160, 40, 6, 4, false, game);
 
 	animation = aIdleRight;
@@ -42,7 +42,7 @@ void Player::update() {
 		orientation = game->orientationLeft;
 	}
 
-	if (state == game->stateMoving) {
+	if (state == game->stateShooting) {
 		if (orientation == game->orientationRight) {
 			animation = aShootingRight;
 		}
@@ -93,8 +93,12 @@ void Player::moveY(float direction) {
 
 Projectile* Player::shoot() {
 	if (shootTime == 0) {
-		shootTime = shootCadence;
 		state = game->stateShooting;
+		shootTime = shootCadence;
+
+		aShootingLeft->currentFrame = 0;
+		aShootingRight->currentFrame = 0;
+
 		auto projectile = new Projectile(x, y, game);
 		if (orientation == game->orientationLeft) {
 			projectile->vx = projectile->vx * -1;
