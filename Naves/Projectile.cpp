@@ -9,6 +9,6 @@ void Projectile::update() {
 	x = x + vx;
 }
 
-bool Projectile::isOut() {
+bool Projectile::isOutOfRender() {
 	return x >= WIDTH;
 }

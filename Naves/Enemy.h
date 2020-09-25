@@ -9,7 +9,7 @@ public:
 	Enemy(float x, float y, Game* game);
 	void update();
 	void draw() override;
-	bool isOut() override;
+	bool isOutOfRender() override;
 
 	Animation* aMoving;
 	Animation* animation;

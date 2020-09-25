@@ -100,7 +100,7 @@ void GameLayer::update() {
 	for (auto const& enemy : enemies) {
 
 		// Enemy traveledOut
-		if (enemy->isOut()) {
+		if (enemy->isOutOfRender()) {
 			bool eInList = std::find(deleteEnemies.begin(),
 				deleteEnemies.end(),
 				enemy) != deleteEnemies.end();
@@ -141,7 +141,7 @@ void GameLayer::update() {
 	for (auto const& projectile : projectiles) {
 
 		// Projectile traveledOut
-		if (projectile->isOut()) {
+		if (projectile->isOutOfRender()) {
 			bool pInList = std::find(deleteProjectiles.begin(),
 				deleteProjectiles.end(),
 				projectile) != deleteProjectiles.end();
@@ -158,11 +158,13 @@ void GameLayer::update() {
 	// Deletion of enemies and projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
+		delete delEnemy;
 	}
 	deleteEnemies.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
+		delete delProjectile;
 	}
 	deleteProjectiles.clear();
 }

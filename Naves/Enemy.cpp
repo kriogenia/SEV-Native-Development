@@ -18,6 +18,6 @@ void Enemy::draw() {
 	animation->draw(x, y);
 }
 
-bool Enemy::isOut() {
+bool Enemy::isOutOfRender() {
 	return x + width/2 <= 0;
 }

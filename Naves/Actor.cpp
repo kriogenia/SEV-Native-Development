@@ -17,6 +17,10 @@ Actor::Actor(string filename, float x, float y, int width, int height, Game* gam
 	this->vy = 0;
 }
 
+Actor::~Actor() {
+	SDL_DestroyTexture(texture);
+}
+
 void Actor::draw() {
 	SDL_Rect source;
 	source.x = 0;
@@ -33,7 +37,7 @@ void Actor::draw() {
 	SDL_RenderCopyEx(game->renderer, texture, &source, &destination, 0, nullptr, SDL_FLIP_NONE);
 }
 
-bool Actor::isOut() {
+bool Actor::isOutOfRender() {
 	return false;
 }
 
