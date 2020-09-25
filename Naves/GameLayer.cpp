@@ -13,6 +13,9 @@ void GameLayer::init() {
 	delete player;
 	player = new Player(50, 50, game);
 
+	delete backgroundPoints;
+	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
+
 	enemies.clear();
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
@@ -171,6 +174,8 @@ void GameLayer::draw() {
 	for (auto const& projectile : projectiles) {
 		projectile->draw();
 	}
+
+	backgroundPoints->draw();
 
 	SDL_RenderPresent(game->renderer);
 }

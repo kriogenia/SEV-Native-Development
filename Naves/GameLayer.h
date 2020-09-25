@@ -22,6 +22,8 @@ public:
 
 	Player* player;
 	Background* background;
+	Actor* backgroundPoints;
+
 	list<Enemy*> enemies;
 	list<Projectile*> projectiles;
 
