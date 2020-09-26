@@ -3,6 +3,7 @@
 #include "Audio.h"
 #include "Background.h"
 #include "Enemy.h"
+#include "EnemyProjectile.h"
 #include "Layer.h"
 #include "Player.h"
 #include "Projectile.h"
@@ -29,6 +30,7 @@ public:
 	Text* textPoints;
 
 	list<Enemy*> enemies;
+	list<EnemyProjectile*> enemyProjectiles;
 	list<Projectile*> projectiles;
 
 	bool controlShoot = false;

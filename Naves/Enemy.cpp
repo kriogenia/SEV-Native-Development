@@ -12,6 +12,7 @@ void Enemy::update() {
 	animation->update();
 	vx = -1;
 	x = x + vx;
+	shootTime--;
 }
 
 void Enemy::draw() {
@@ -20,4 +21,14 @@ void Enemy::draw() {
 
 bool Enemy::isOutOfRender() {
 	return x + width/2 <= 0;
+}
+
+EnemyProjectile* Enemy::autoshoot() {
+	if (shootTime <= 0) {
+		shootTime = shotCadence;
+		return new EnemyProjectile(x, y, game);
+	}
+	else {
+		return NULL;
+	}
 }
