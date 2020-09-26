@@ -28,6 +28,7 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
 
+	enemyProjectiles.clear();
 	projectiles.clear();
 
 }
@@ -79,13 +80,23 @@ void GameLayer::update() {
 		int rX = (rand() % (600 - 500)) + 1 + 500;
 		int rY = (rand() % (300 - 60)) + 1 + 60;
 		enemies.push_back(new Enemy(rX, rY, game));
-		newEnemyTime = points*5 > 110 ? 10 : 110 - points*5;
+		newEnemyTime = points*5 + 25 > 110 ? 25 : 110 - points*5;
 	}
 
 	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
+		if (!enemy->isOutOfRender() && enemy->x > player->x && enemy->x - player->x < 200) {
+			auto projectile = enemy->autoshoot();
+			if (projectile != NULL) {
+				cout << "Enemy did shot from " << projectile->x << ", " << projectile->y << endl;
+				enemyProjectiles.push_back(projectile);
+			}
+		}
+	}
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		enemyProjectile->update();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->update();
@@ -101,7 +112,26 @@ void GameLayer::update() {
 
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
+	list<EnemyProjectile*> deleteEnemyProjectiles;
 	list<Projectile*> deleteProjectiles;
+
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		// Collision - EnemyProjectile, Player
+		if (player->isOverlap(enemyProjectile)) {
+			init();
+			return;
+		}
+		// EnemyProjectile traveled out
+		if (enemyProjectile->isOutOfRender()) {
+			bool pInList = std::find(deleteEnemyProjectiles.begin(),
+				deleteEnemyProjectiles.end(),
+				enemyProjectile) != deleteEnemyProjectiles.end();
+			if (!pInList) {
+				deleteEnemyProjectiles.push_back(enemyProjectile);
+				cout << "Enemy projectile traveled out" << endl;
+			}
+		}
+	}
 
 	for (auto const& enemy : enemies) {
 
@@ -168,6 +198,12 @@ void GameLayer::update() {
 	}
 	deleteEnemies.clear();
 
+	for (auto const& delEnemyProjectile : deleteEnemyProjectiles) {
+		enemyProjectiles.remove(delEnemyProjectile);
+		delete delEnemyProjectile;
+	}
+	deleteEnemyProjectiles.clear();
+
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
 		delete delProjectile;
@@ -181,6 +217,9 @@ void GameLayer::draw() {
 
 	for (auto const& enemy : enemies) {
 		enemy->draw();
+	}
+	for (auto const& enemyProjectile : enemyProjectiles) {
+		enemyProjectile->draw();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->draw();
