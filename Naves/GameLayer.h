@@ -25,8 +25,10 @@ public:
 
 	Player* player;
 	Background* background;
+	Actor* healthPoints;
 	Actor* backgroundPoints;
 	Audio* audioBackground;
+	Text* textHealthPoints;
 	Text* textPoints;
 
 	list<Enemy*> enemies;
