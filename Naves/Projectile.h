@@ -5,7 +5,7 @@
 class Projectile : public Actor
 {
 public:
-	Projectile(float x, float y, Game* game);
+	Projectile(float x, float y, int power, Game* game);
 	void update();
 	bool isOutOfRender() override;
 };

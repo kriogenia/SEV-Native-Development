@@ -6,6 +6,7 @@
 #include "EnemyProjectile.h"
 #include "Layer.h"
 #include "Player.h"
+#include "PowerUp.h"
 #include "Projectile.h"
 #include "Text.h"
 
@@ -33,12 +34,14 @@ public:
 
 	list<Enemy*> enemies;
 	list<EnemyProjectile*> enemyProjectiles;
+	list<PowerUp*> powerUps;
 	list<Projectile*> projectiles;
 
 	bool controlShoot = false;
 	int controlMoveX = 0;
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
+	int newItemTime = 300;
 	int points = 0;
 
 };

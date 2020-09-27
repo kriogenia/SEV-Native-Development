@@ -16,8 +16,10 @@ public:
 	Projectile* shoot();
 	Audio* audioShoot;
 	Audio* audioDamage;
+	Audio* audioPowerUp;
 
 	int hp = 3;
+	int power = 1;
 	int shootCadence = 30;
 	int shootTime = 0;
 

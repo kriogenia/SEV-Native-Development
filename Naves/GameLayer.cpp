@@ -88,6 +88,15 @@ void GameLayer::update() {
 		newEnemyTime = points*5 + 25 > 110 ? 25 : 110 - points*5;
 	}
 
+	// Item generation
+	newItemTime--;
+	if (newItemTime <= 0 && points >= 10) {
+		int rX = (rand() % (WIDTH - 50)) + 1 + 25;
+		int rY = (rand() % (HEIGHT - 50)) + 1 + 25;
+		powerUps.push_back(new PowerUp(rX, rY, game));
+		newItemTime = 300;
+	}
+
 	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
@@ -110,6 +119,7 @@ void GameLayer::update() {
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<EnemyProjectile*> deleteEnemyProjectiles;
+	list<PowerUp*> deletePowerUps;
 	list<Projectile*> deleteProjectiles;
 
 	// Collisions - Player, Enemy
@@ -161,6 +171,28 @@ void GameLayer::update() {
 				deleteEnemyProjectiles.push_back(enemyProjectile);
 				cout << "Enemy projectile traveled out" << endl;
 			}
+		}
+	}
+
+	// Collisions - Player, PowerUp
+	for (auto const& powerUp : powerUps) {
+		if (player->isOverlap(powerUp)) {
+			bool pInList = std::find(deletePowerUps.begin(),
+				deletePowerUps.end(),
+				powerUp) != deletePowerUps.end();
+
+			if (!pInList) {
+				deletePowerUps.push_back(powerUp);
+			}
+
+			if (player->power == 1) {
+				player->power = 2;
+			}
+			else {
+				points++;
+			}
+			player->audioPowerUp->play();
+			cout << "Player powered up" << endl;
 		}
 	}
 
@@ -235,6 +267,12 @@ void GameLayer::update() {
 	}
 	deleteEnemyProjectiles.clear();
 
+	for (auto const& delPowerUp : deletePowerUps) {
+		powerUps.remove(delPowerUp);
+		delete delPowerUp;
+	}
+	deletePowerUps.clear();
+
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
 		delete delProjectile;
@@ -246,6 +284,9 @@ void GameLayer::draw() {
 	background->draw();
 	player->draw();
 
+	for (auto const& powerUp : powerUps) {
+		powerUp->draw();
+	}
 	for (auto const& enemy : enemies) {
 		enemy->draw();
 	}
