@@ -16,9 +16,14 @@ void GameLayer::init() {
 	player = new Player(50, 50, game);
 
 	delete backgroundPoints;
-	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
-	textPoints = new Text("hola", WIDTH * 0.92, HEIGHT * 0.04, game);
+	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.9, HEIGHT * 0.05, 24, 24, game);
+	textPoints = new Text("0", WIDTH * 0.9 + 25, HEIGHT * 0.05, game);
 	textPoints->content = to_string(points);
+
+	delete healthPoints;
+	healthPoints = new Actor("res/corazon.png", 25, 25, 44, 36, game);
+	textHealthPoints = new Text("3", 25 + 40, 25, game);
+	textHealthPoints->content = to_string(player->hp);
 
 	delete audioBackground;
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
@@ -102,24 +107,50 @@ void GameLayer::update() {
 		projectile->update();
 	}
 
-	// Collisions - Player, Enemy
-	for (auto const& enemy : enemies) {
-		if (player->isOverlap(enemy)) {
-			init();
-			return;
-		}
-	}
-
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<EnemyProjectile*> deleteEnemyProjectiles;
 	list<Projectile*> deleteProjectiles;
 
+	// Collisions - Player, Enemy
+	for (auto const& enemy : enemies) {
+		if (player->isOverlap(enemy)) {
+			player->hp--;
+			player->audioDamage->play();
+			textHealthPoints->content = to_string(player->hp);
+			if (player->hp <= 0) {
+				init();
+				return;
+			}
+			bool eInList = std::find(deleteEnemies.begin(),
+				deleteEnemies.end(),
+				enemy) != deleteEnemies.end();
+			if (!eInList) {
+				deleteEnemies.push_back(enemy);
+				cout << "Enemy traveled out" << endl;
+			}
+		}
+	}
+
 	for (auto const& enemyProjectile : enemyProjectiles) {
 		// Collision - EnemyProjectile, Player
 		if (player->isOverlap(enemyProjectile)) {
-			init();
-			return;
+			bool pInList = std::find(deleteEnemyProjectiles.begin(),
+				deleteEnemyProjectiles.end(),
+				enemyProjectile) != deleteEnemyProjectiles.end();
+
+			if (!pInList) {
+				deleteEnemyProjectiles.push_back(enemyProjectile);
+			}
+
+			player->hp--;
+			player->audioDamage->play();
+			textHealthPoints->content = to_string(player->hp);
+			cout << "Contact! - HP: " << player->hp << endl;
+			if (player->hp <= 0) {
+				init();
+				return;
+			}
 		}
 		// EnemyProjectile traveled out
 		if (enemyProjectile->isOutOfRender()) {
@@ -227,6 +258,8 @@ void GameLayer::draw() {
 
 	textPoints->draw();
 	backgroundPoints->draw();
+	textHealthPoints->draw();
+	healthPoints->draw();
 
 	SDL_RenderPresent(game->renderer);
 }
@@ -293,6 +326,5 @@ void GameLayer::keysToControls(SDL_Event event) {
 	if (event.type == SDL_QUIT) {
 		game->loopActive = false;
 	}
-
 
 }
