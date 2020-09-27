@@ -6,6 +6,7 @@ Player::Player(float x, float y, Game* game)
 
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
 	audioDamage = new Audio("res/efecto_hit.wav", false);
+	audioPowerUp = new Audio("res/efecto_powerup.wav", false);
 
 }
 
@@ -28,8 +29,8 @@ void Player::moveY(float direction) {
 Projectile* Player::shoot() {
 	if (shootTime == 0) {
 		audioShoot->play();
-		shootTime = shootCadence;
-		return new Projectile(x, y, game);
+		shootTime = shootCadence/power;
+		return new Projectile(x, y, power, game);
 	}
 	else {
 		return NULL;
