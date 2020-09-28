@@ -2,10 +2,10 @@
 
 #include "PickUp.h"
 
-class PowerUp : public PickUp
+class Coin : public PickUp
 {
 public:
-	PowerUp(float x, float y, Game* game);
+	Coin(float x, float y, Game* game);
 
 	void doEffect(Player* player, int* points) override;
 };
