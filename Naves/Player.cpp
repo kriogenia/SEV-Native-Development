@@ -6,7 +6,6 @@ Player::Player(float x, float y, Game* game)
 
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
 	audioDamage = new Audio("res/efecto_hit.wav", false);
-	audioPowerUp = new Audio("res/efecto_powerup.wav", false);
 
 }
 

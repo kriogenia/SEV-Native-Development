@@ -2,9 +2,11 @@
 
 #include "Audio.h"
 #include "Background.h"
+#include "Coin.h"
 #include "Enemy.h"
 #include "EnemyProjectile.h"
 #include "Layer.h"
+#include "Life.h"
 #include "Player.h"
 #include "PowerUp.h"
 #include "Projectile.h"
@@ -34,7 +36,7 @@ public:
 
 	list<Enemy*> enemies;
 	list<EnemyProjectile*> enemyProjectiles;
-	list<PowerUp*> powerUps;
+	list<PickUp*> pickUps;
 	list<Projectile*> projectiles;
 
 	bool controlShoot = false;

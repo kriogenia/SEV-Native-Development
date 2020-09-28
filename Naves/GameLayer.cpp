@@ -34,6 +34,7 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 200, game));
 
 	enemyProjectiles.clear();
+	pickUps.clear();
 	projectiles.clear();
 
 }
@@ -90,11 +91,21 @@ void GameLayer::update() {
 
 	// Item generation
 	newItemTime--;
-	if (newItemTime <= 0 && points >= 10) {
-		int rX = (rand() % (WIDTH - 50)) + 1 + 25;
-		int rY = (rand() % (HEIGHT - 50)) + 1 + 25;
-		powerUps.push_back(new PowerUp(rX, rY, game));
-		newItemTime = 300;
+	if (newItemTime % 100 == 0) {
+		int rX = (rand() % (WIDTH - 150)) + 1 + 25;
+		int rY = (rand() % (HEIGHT - 150)) + 1 + 25;
+		if (newItemTime <= 0 && points >= 10) {				// One of each three items is a PowerUp
+			pickUps.push_back(new PowerUp(rX, rY, game));	
+			newItemTime = 300;								// Resets the item generation
+		}
+		else {
+			if (player->hp < 3) {							// Below max health generates a Life
+				pickUps.push_back(new Life(rX, rY, game));	
+			}
+			else {											// Otherwise a coin
+				pickUps.push_back(new Coin(rX, rY, game));	
+			}
+		}
 	}
 
 	// Actors update
@@ -119,7 +130,7 @@ void GameLayer::update() {
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<EnemyProjectile*> deleteEnemyProjectiles;
-	list<PowerUp*> deletePowerUps;
+	list<PickUp*> deletePickUps;
 	list<Projectile*> deleteProjectiles;
 
 	// Collisions - Player, Enemy
@@ -175,24 +186,19 @@ void GameLayer::update() {
 	}
 
 	// Collisions - Player, PowerUp
-	for (auto const& powerUp : powerUps) {
-		if (player->isOverlap(powerUp)) {
-			bool pInList = std::find(deletePowerUps.begin(),
-				deletePowerUps.end(),
-				powerUp) != deletePowerUps.end();
+	for (auto const& pickUp : pickUps) {
+		if (player->isOverlap(pickUp)) {
+			bool pInList = std::find(deletePickUps.begin(),
+				deletePickUps.end(),
+				pickUp) != deletePickUps.end();
 
 			if (!pInList) {
-				deletePowerUps.push_back(powerUp);
+				deletePickUps.push_back(pickUp);
 			}
 
-			if (player->power == 1) {
-				player->power = 2;
-			}
-			else {
-				points++;
-			}
-			player->audioPowerUp->play();
-			cout << "Player powered up" << endl;
+			pickUp->doEffect(player, &points);
+			textHealthPoints->content = to_string(player->hp);
+			textPoints->content = to_string(points);
 		}
 	}
 
@@ -267,11 +273,11 @@ void GameLayer::update() {
 	}
 	deleteEnemyProjectiles.clear();
 
-	for (auto const& delPowerUp : deletePowerUps) {
-		powerUps.remove(delPowerUp);
+	for (auto const& delPowerUp : deletePickUps) {
+		pickUps.remove(delPowerUp);
 		delete delPowerUp;
 	}
-	deletePowerUps.clear();
+	deletePickUps.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
@@ -284,8 +290,8 @@ void GameLayer::draw() {
 	background->draw();
 	player->draw();
 
-	for (auto const& powerUp : powerUps) {
-		powerUp->draw();
+	for (auto const& pickUp : pickUps) {
+		pickUp->draw();
 	}
 	for (auto const& enemy : enemies) {
 		enemy->draw();
