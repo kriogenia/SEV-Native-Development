@@ -5,5 +5,5 @@ PickUp::PickUp(string filename, float x, float y, int width, int height, Game* g
 }
 
 void PickUp::doEffect(Player* player, int* points) {
-	audioPickUp->play();
+	points++;
 }

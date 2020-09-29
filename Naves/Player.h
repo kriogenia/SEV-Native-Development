@@ -15,7 +15,10 @@ public:
 
 	Projectile* shoot();
 	Audio* audioShoot;
+	Audio* audioCoin;
 	Audio* audioDamage;
+	Audio* audioLife;
+	Audio* audioPowerUp;
 
 	int hp = 3;
 	int power = 1;
