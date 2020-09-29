@@ -5,7 +5,10 @@ Player::Player(float x, float y, Game* game)
 	: Actor("res/jugador.png", x, y, 50, 57, game) {
 
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
+	audioCoin = new Audio("res/efecto_moneda.wav", false);
 	audioDamage = new Audio("res/efecto_hit.wav", false);
+	audioLife = new Audio("res/efecto_vida.wav", false);
+	audioPowerUp = new Audio("res/efecto_powerup.wav", false);
 
 }
 

@@ -9,7 +9,5 @@ public:
 	PickUp(string filename, float x, float y, int width, int height, Game* game);
 
 	virtual void doEffect(Player* player, int* points);
-
-	Audio* audioPickUp;
 };
 
