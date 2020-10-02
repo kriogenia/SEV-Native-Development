@@ -72,15 +72,6 @@ void GameLayer::processControls() {
 void GameLayer::update() {
 	background->update();
 
-	// Enemy generation
-	newEnemyTime--;
-	if (newEnemyTime <= 0) {
-		int rX = (rand() % (600 - 500)) + 1 + 500;
-		int rY = (rand() % (300 - 60)) + 1 + 60;
-		enemies.push_back(new Enemy(rX, rY, game));
-		newEnemyTime = 110; //points*5 > 110 ? 10 : 110 - points*5;
-	}
-
 	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
@@ -317,14 +308,20 @@ void GameLayer::loadMap(string name) {
 void GameLayer::loadMapObject(char character, float x, float y)
 {
 	switch (character) {
+	case 'E': {
+		Enemy* enemy = new Enemy(x, y, game);
+		enemy->y = enemy->y - enemy->height / 2;
+		enemies.push_back(enemy);
+		break;
+	}
 	case '1': {
 		player = new Player(x, y, game);
-		player->y = player->y - player->height / 2;	// Counting from base
+		player->y = player->y - player->height / 2;
 		break;
 	}
 	case '#': {
 		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
-		tile->y = tile->y - tile->height / 2;		// Counting from base
+		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
 		break;
 	}
