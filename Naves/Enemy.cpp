@@ -41,7 +41,3 @@ void Enemy::impacted() {
 void Enemy::draw(float scrollX) {
 	animation->draw(x - scrollX, y);
 }
-
-bool Enemy::isOutOfRender() {
-	return x + width/2 <= 0;
-}

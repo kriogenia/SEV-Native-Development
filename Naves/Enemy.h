@@ -10,7 +10,6 @@ public:
 
 	void update();
 	void draw(float scrollX = 0) override;
-	bool isOutOfRender() override;
 	void impacted();
 
 	int state;

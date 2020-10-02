@@ -9,6 +9,8 @@ void GameLayer::init() {
 
 	scrollX = 0;
 	tiles.clear();
+	enemies.clear();
+	projectiles.clear();
 	loadMap("res/0.txt");
 
 	points = 0;
@@ -26,9 +28,6 @@ void GameLayer::init() {
 	delete textPoints;
 	textPoints = new Text("0", WIDTH * 0.92, HEIGHT * 0.04, game);
 	textPoints->content = to_string(points);
-
-	enemies.clear();
-	projectiles.clear();
 
 
 }
@@ -98,7 +97,7 @@ void GameLayer::update() {
 	for (auto const& enemy : enemies) {
 
 		// Enemy traveledOut
-		if (enemy->isOutOfRender()) {
+		if (!enemy->isInRender()) {
 			bool eInList = std::find(deleteEnemies.begin(),
 				deleteEnemies.end(),
 				enemy) != deleteEnemies.end();
@@ -142,28 +141,10 @@ void GameLayer::update() {
 		}
 	}
 
-
 	for (auto const& projectile : projectiles) {
 
 		// Projectile traveledOut
-		if (projectile->isOutOfRender()) {
-			bool pInList = std::find(deleteProjectiles.begin(),
-				deleteProjectiles.end(),
-				projectile) != deleteProjectiles.end();
-
-			if (!pInList) {
-				deleteProjectiles.push_back(projectile);
-				cout << "Projectile traveled out" << endl;
-			}
-			continue;
-		}
-
-	}
-
-	for (auto const& projectile : projectiles) {
-
-		// Projectile traveledOut
-		if (projectile->isOutOfRender()) {
+		if (!projectile->isInRender(scrollX)) {
 			bool pInList = std::find(deleteProjectiles.begin(),
 				deleteProjectiles.end(),
 				projectile) != deleteProjectiles.end();
@@ -192,7 +173,17 @@ void GameLayer::update() {
 }
 
 void GameLayer::calculateScroll() {
-	scrollX = player->x - 200;
+	if (player->x > WIDTH * 0.3) {
+		if (player->x - scrollX < WIDTH * 0.3) {
+			scrollX = player->x - WIDTH * 0.3;
+		}
+	}
+	if (player->x < mapWidth - WIDTH * 0.3) {
+		if (player->x - scrollX > WIDTH * 0.7) {
+			scrollX = player->x - WIDTH * 0.7;
+		}
+	}
+
 }
 
 void GameLayer::draw() {

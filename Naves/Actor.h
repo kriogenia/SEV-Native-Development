@@ -8,7 +8,7 @@ public:
 	~Actor();
 
 	virtual void draw(float scrollX = 0);
-	virtual bool isOutOfRender();
+	virtual bool isInRender(float scrollX = 0);
 	bool isOverlap(Actor* actor);
 
 	SDL_Texture* texture;

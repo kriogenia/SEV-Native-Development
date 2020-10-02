@@ -31,9 +31,14 @@ void Actor::draw(float scrollX) {
 	SDL_RenderCopyEx(game->renderer, texture, &source, &destination, 0, nullptr, SDL_FLIP_NONE);
 }
 
-bool Actor::isOutOfRender() {
+bool Actor::isInRender(float scrollX) {
+	if ((x - scrollX) - width / 2 <= WIDTH && (x - scrollX) + width / 2 >= 0 &&
+		y - height / 2 <= HEIGHT && y + height / 2 >= 0) {
+		return true;
+	}
 	return false;
 }
+
 
 bool Actor::isOverlap(Actor* actor) {
 	bool overlap = false;
