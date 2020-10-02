@@ -99,6 +99,7 @@ void GameLayer::update() {
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
+	list<Tile*> deleteTiles;
 
 	for (auto const& enemy : enemies) {
 
@@ -137,6 +138,28 @@ void GameLayer::update() {
 
 	for (auto const& projectile : projectiles) {
 
+		// Collision - Projectile, Tile
+		for (auto const& tile : tiles) {
+			if (tile->isDestructible) {
+				if (tile->isOverlap(projectile)) {
+					bool tInList = std::find(deleteTiles.begin(),
+						deleteTiles.end(),
+						tile) != deleteTiles.end();
+
+					if (!tInList) {
+						deleteTiles.push_back(tile);
+					}
+					bool pInList = std::find(deleteProjectiles.begin(),
+						deleteProjectiles.end(),
+						projectile) != deleteProjectiles.end();
+
+					if (!pInList) {
+						deleteProjectiles.push_back(projectile);
+					}
+				}
+			}
+		}
+
 		// Projectile traveledOut
 		if (!projectile->isInRender(scrollX) || projectile->vx == 0) {
 			bool pInList = std::find(deleteProjectiles.begin(),
@@ -166,6 +189,13 @@ void GameLayer::update() {
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
+	for (auto const& delTile : deleteTiles) {
+		tiles.remove(delTile);
+		space->removeStaticActor(delTile);
+		delete delTile;
+	}
+	deleteTiles.clear();
 }
 
 void GameLayer::calculateScroll() {
@@ -328,6 +358,15 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case '#': {
 		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
 		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'M': {
+		loadMapObject('.', x, y);
+		Tile* tile = new Tile("res/bloque_metal.png", x, y, game);
+		tile->y = tile->y - tile->height / 2;
+		tile->isDestructible = true;
 		tiles.push_back(tile);
 		space->addStaticActor(tile);
 		break;
