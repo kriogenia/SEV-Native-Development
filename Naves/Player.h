@@ -32,6 +32,9 @@ public:
 
 	Animation* aIdleRight;
 	Animation* aIdleLeft;
+
+	Animation* aJumpingRight;
+	Animation* aJumpingLeft;
 	
 	Animation* aRunningRight;
 	Animation* aRunningLeft;

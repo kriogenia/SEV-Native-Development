@@ -15,6 +15,11 @@ Player::Player(float x, float y, Game* game)
 	aIdleLeft = new Animation("res/jugador_idle_izquierda.png", width, height,
 		320, 40, 6, 8, true, game);
 
+	aJumpingRight = new Animation("res/jugador_saltando_derecha.png",
+		width, height, 160, 40, 6, 4, true, game);
+	aJumpingLeft = new Animation("res/jugador_saltando_izquierda.png",
+		width, height, 160, 40, 6, 4, true, game);
+
 	aRunningRight = new Animation("res/jugador_corriendo_derecha.png", width, height,
 		320, 40, 6, 8, true, game);
 	aRunningLeft = new Animation("res/jugador_corriendo_izquierda.png", width, height,
@@ -30,6 +35,14 @@ Player::Player(float x, float y, Game* game)
 }
 
 void Player::update() {
+
+	if (onAir && state == game->stateMoving) {
+		state = game->stateJumping;
+	}
+	if (!onAir && state == game->stateJumping) {
+		state = game->stateMoving;
+	}
+
 	if (invulnerableTime > 0) {
 		invulnerableTime--;
 	}
@@ -54,6 +67,15 @@ void Player::update() {
 	}
 	else if (vx < 0) {
 		orientation = game->orientationLeft;
+	}
+
+	if (state == game->stateJumping) {
+		if (orientation == game->orientationRight) {
+			animation = aJumpingRight;
+		}
+		if (orientation == game->orientationLeft) {
+			animation = aJumpingLeft;
+		}
 	}
 
 	if (state == game->stateShooting) {
