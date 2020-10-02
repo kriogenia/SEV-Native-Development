@@ -12,9 +12,6 @@ void GameLayer::init() {
 	delete background;
 	background = new Background("res/fondo_2.png", WIDTH * 0.5, HEIGHT * 0.5, -1, game);
 
-	delete player;
-	player = new Player(50, 50, game);
-
 	delete backgroundPoints;
 	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
 
@@ -27,10 +24,10 @@ void GameLayer::init() {
 	textPoints->content = to_string(points);
 
 	enemies.clear();
-	enemies.push_back(new Enemy(300, 50, game));
-	enemies.push_back(new Enemy(300, 200, game));
-
+	tiles.clear();
 	projectiles.clear();
+
+	loadMap("res/0.txt");
 
 }
 
@@ -81,7 +78,7 @@ void GameLayer::update() {
 		int rX = (rand() % (600 - 500)) + 1 + 500;
 		int rY = (rand() % (300 - 60)) + 1 + 60;
 		enemies.push_back(new Enemy(rX, rY, game));
-		newEnemyTime = points*5 > 110 ? 10 : 110 - points*5;
+		newEnemyTime = 110; //points*5 > 110 ? 10 : 110 - points*5;
 	}
 
 	// Actors update
@@ -203,6 +200,11 @@ void GameLayer::update() {
 
 void GameLayer::draw() {
 	background->draw();
+
+	for (auto const& tile : tiles) {
+		tile->draw();
+	}
+
 	player->draw();
 
 	for (auto const& enemy : enemies) {
@@ -283,3 +285,50 @@ void GameLayer::keysToControls(SDL_Event event) {
 
 
 }
+
+void GameLayer::loadMap(string name) {
+	char character;
+	string line;
+	ifstream streamFile(name.c_str());
+	if (!streamFile.is_open()) {
+		cout << "Error opening map file" << endl;
+		return;
+	}
+	else {
+		// For line
+		for (int i = 0; getline(streamFile, line); i++) {
+			istringstream streamLine(line);
+			mapWidth = line.length() * 40; // Width of map in pixel
+			// For each character (on each line)
+			for (int j = 0; !streamLine.eof(); j++) {
+				streamLine >> character;			// Reads character
+				cout << character;
+				float x = 40 / 2 + j * 40;			// central  x
+				float y = 32 + i * 32;				// floor y
+				loadMapObject(character, x, y);
+			}
+
+			cout << character << endl;
+		}
+	}
+	streamFile.close();
+}
+
+void GameLayer::loadMapObject(char character, float x, float y)
+{
+	switch (character) {
+	case '1': {
+		player = new Player(x, y, game);
+		player->y = player->y - player->height / 2;	// Counting from base
+		break;
+	}
+	case '#': {
+		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
+		tile->y = tile->y - tile->height / 2;		// Counting from base
+		tiles.push_back(tile);
+		break;
+	}
+	}
+}
+
+

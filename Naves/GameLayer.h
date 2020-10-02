@@ -6,9 +6,12 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "Text.h"
+#include "Tile.h"
 #include "Audio.h"
 
+#include <fstream>
 #include <list>
+#include <sstream>
 
 class GameLayer: public Layer
 {
@@ -22,6 +25,9 @@ public:
 	void draw() override;
 	void keysToControls(SDL_Event event);
 
+	void loadMap(string name);
+	void loadMapObject(char character, float x, float y);
+
 	Player* player;
 	Background* background;
 
@@ -30,6 +36,7 @@ public:
 	Text* textPoints;
 
 	list<Enemy*> enemies;
+	list<Tile*> tiles;
 	list<Projectile*> projectiles;
 
 	bool controlShoot = false;
@@ -37,6 +44,8 @@ public:
 	int controlMoveY = 0;
 	int newEnemyTime = 0;
 	int points = 0;
+
+	int mapWidth;
 
 };
 
