@@ -16,6 +16,9 @@ public:
 	void update();
 	void updateMoveRight(Actor* dynamicAct);
 	void updateMoveLeft(Actor* dynamicAct);
+	void updateMoveTop(Actor* dynamicAct);
+	void updateMoveDown(Actor* dynamicAct);
+
 
 	float gravity;
 

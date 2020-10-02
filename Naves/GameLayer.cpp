@@ -7,7 +7,7 @@ GameLayer::GameLayer(Game* game)
 
 void GameLayer::init() {
 
-	space = new Space(0);
+	space = new Space(1);
 
 	scrollX = 0;
 	tiles.clear();
@@ -75,6 +75,7 @@ void GameLayer::processControls() {
 
 void GameLayer::update() {
 	background->update();
+	space->update();
 
 	// Actors update
 	player->update();

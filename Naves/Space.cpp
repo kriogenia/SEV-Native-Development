@@ -32,6 +32,9 @@ void Space::update() {
 		// Moving right / left
 		updateMoveRight(actor);
 		updateMoveLeft(actor);
+        updateMoveTop(actor);
+        updateMoveDown(actor);
+
 	}
 }
 
@@ -99,5 +102,69 @@ void Space::updateMoveLeft(Actor* dynamicAct) {
 
         dynamicAct->x = dynamicAct->x + possibleMovement;
         dynamicAct->vx = possibleMovement;
+    }
+}
+
+void Space::updateMoveDown(Actor* dynamicAct) {
+    if (dynamicAct->vy > 0) {
+        int possibleMovement = dynamicAct->vy;
+
+        int topDynamic = dynamicAct->y - dynamicAct->height / 2;
+        int downDynamic = dynamicAct->y + dynamicAct->height / 2;
+        int rightDynamic = dynamicAct->x + dynamicAct->width / 2;
+        int leftDynamic = dynamicAct->x - dynamicAct->width / 2;
+
+        for (auto const& staticAct : staticActors) {
+
+            int topStatic = staticAct->y - staticAct->height / 2;
+            int downStatic = staticAct->y + staticAct->height / 2;
+            int rightStatic = staticAct->x + staticAct->width / 2;
+            int leftStatic = staticAct->x - staticAct->width / 2;
+
+            if ((downDynamic + dynamicAct->vy) >= topStatic
+                && topDynamic < downStatic
+                && leftDynamic < rightStatic
+                && rightDynamic > leftStatic) {
+
+                if (possibleMovement >= topStatic - downDynamic) {
+                    possibleMovement = topStatic - downDynamic;
+                }
+            }
+        }
+
+        dynamicAct->y = dynamicAct->y + possibleMovement;
+        dynamicAct->vy = possibleMovement;
+    }
+}
+
+void Space::updateMoveTop(Actor* dynamicAct) {
+    if (dynamicAct->vy < 0) {
+        int possibleMovement = dynamicAct->vy;
+
+        int topDynamic = dynamicAct->y - dynamicAct->height / 2;
+        int downDynamic = dynamicAct->y + dynamicAct->height / 2;
+        int rightDynamic = dynamicAct->x + dynamicAct->width / 2;
+        int leftDynamic = dynamicAct->x - dynamicAct->width / 2;
+
+        for (auto const& staticAct : staticActors) {
+
+            int topStatic = staticAct->y - staticAct->height / 2;
+            int downStatic = staticAct->y + staticAct->height / 2;
+            int rightStatic = staticAct->x + staticAct->width / 2;
+            int leftStatic = staticAct->x - staticAct->width / 2;
+
+            if ((topDynamic + dynamicAct->vy) <= downStatic
+                && downDynamic > topStatic
+                && leftDynamic < rightStatic
+                && rightDynamic > leftStatic) {
+
+                if (possibleMovement <= downStatic - topDynamic) {
+                    possibleMovement = downStatic - topDynamic;
+                }
+            }
+        }
+
+        dynamicAct->y = dynamicAct->y + possibleMovement;
+        dynamicAct->vy = possibleMovement;
     }
 }
