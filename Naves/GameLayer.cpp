@@ -61,14 +61,8 @@ void GameLayer::processControls() {
 	}
 
 	// Movement - Axis Y
-	if (controlMoveY > 0) {
-		player->moveY(1);
-	}
-	else if (controlMoveY < 0) {
-		player->moveY(-1);
-	}
-	else {
-		player->moveY(0);
+	if (controlMoveY < 0) {
+		player->jump();
 	}
 
 }
@@ -148,7 +142,7 @@ void GameLayer::update() {
 	for (auto const& projectile : projectiles) {
 
 		// Projectile traveledOut
-		if (!projectile->isInRender(scrollX)) {
+		if (!projectile->isInRender(scrollX) || projectile->vx == 0) {
 			bool pInList = std::find(deleteProjectiles.begin(),
 				deleteProjectiles.end(),
 				projectile) != deleteProjectiles.end();

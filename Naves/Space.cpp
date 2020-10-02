@@ -29,6 +29,10 @@ void Space::update() {
 		if (actor->vy > 20) {
 			actor->vy = 20;
 		}
+
+        // Aun no se han detectado choques
+        actor->collisionDown = false;
+
 		// Moving right / left
 		updateMoveRight(actor);
 		updateMoveLeft(actor);
@@ -128,6 +132,7 @@ void Space::updateMoveDown(Actor* dynamicAct) {
 
                 if (possibleMovement >= topStatic - downDynamic) {
                     possibleMovement = topStatic - downDynamic;
+                    dynamicAct->collisionDown = true;
                 }
             }
         }

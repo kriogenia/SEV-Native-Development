@@ -12,6 +12,8 @@ public:
 	bool isOverlap(Actor* actor);
 
 	SDL_Texture* texture;
+
+	bool collisionDown;
 	float x;
 	float y;
 	float vx;

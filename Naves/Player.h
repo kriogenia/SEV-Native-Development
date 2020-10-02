@@ -14,14 +14,17 @@ public:
 	void draw(float scrollX = 0) override;
 	void moveX(float direction);
 	void moveY(float direction);
+	void jump();
+
 
 	Projectile* shoot();
 	Audio* audioShoot;
 
+	bool onAir;
+	int orientation;
 	int shootCadence = 30;
 	int shootTime = 0;
 	int state;
-	int orientation;
 
 	Animation* animation;
 

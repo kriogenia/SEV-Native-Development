@@ -6,6 +6,7 @@ Player::Player(float x, float y, Game* game)
 
 	audioShoot = new Audio("res/efecto_disparo.wav", false);
 
+	onAir = false;
 	state = game->stateMoving;
 	orientation = game->orientationRight;
 
@@ -29,6 +30,13 @@ Player::Player(float x, float y, Game* game)
 }
 
 void Player::update() {
+	if (collisionDown == true) {
+		onAir = false;
+	}
+	else {
+		onAir = true;
+	}
+
 	bool endAnimation = animation->update();
 
 	if (endAnimation) {
@@ -89,6 +97,14 @@ void Player::moveX(float direction) {
 
 void Player::moveY(float direction) {
 	vy = 3 * direction;
+}
+
+void Player::jump() {
+	if (!onAir) {
+		vy = -16;
+		onAir = true;
+	}
+
 }
 
 Projectile* Player::shoot() {
