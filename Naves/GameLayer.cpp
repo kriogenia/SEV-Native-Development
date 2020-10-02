@@ -68,8 +68,13 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
-	background->update();
+
+	if (player->y > HEIGHT + player->height) {
+		init();
+	}
+
 	space->update();
+	background->update();
 
 	// Actors update
 	player->update();
@@ -93,18 +98,6 @@ void GameLayer::update() {
 	list<Projectile*> deleteProjectiles;
 
 	for (auto const& enemy : enemies) {
-
-		// Enemy traveledOut
-		if (!enemy->isInRender()) {
-			bool eInList = std::find(deleteEnemies.begin(),
-				deleteEnemies.end(),
-				enemy) != deleteEnemies.end();
-			if (!eInList) {
-				deleteEnemies.push_back(enemy);
-				cout << "Enemy traveled out" << endl;
-			}
-			continue;
-		}
 
 		// Collision - Projectile, Enemy
 		for (auto const& projectile : projectiles) {
@@ -277,7 +270,7 @@ void GameLayer::keysToControls(SDL_Event event) {
 }
 
 void GameLayer::loadMap(string name) {
-	char character;
+	char character = 'a';
 	string line;
 	ifstream streamFile(name.c_str());
 	if (!streamFile.is_open()) {

@@ -13,6 +13,7 @@ public:
 	void impacted();
 
 	int state;
+	float vxIntelligence;
 
 	Animation* aMoving;
 	Animation* aDying;
