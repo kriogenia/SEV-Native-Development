@@ -7,6 +7,8 @@ GameLayer::GameLayer(Game* game)
 
 void GameLayer::init() {
 
+	space = new Space(0);
+
 	scrollX = 0;
 	tiles.clear();
 	enemies.clear();
@@ -43,6 +45,7 @@ void GameLayer::processControls() {
 		Projectile* newProjectile = player->shoot();
 		if (newProjectile != NULL) {
 			projectiles.push_back(newProjectile);
+			space->addDynamicActor(newProjectile);
 		}
 	}
 
@@ -161,12 +164,14 @@ void GameLayer::update() {
 	// Deletion of enemies and projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
+		space->removeDynamicActor(delEnemy);
 		delete delEnemy;
 	}
 	deleteEnemies.clear();
 
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
+		space->removeDynamicActor(delProjectile);
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
@@ -311,17 +316,20 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		Enemy* enemy = new Enemy(x, y, game);
 		enemy->y = enemy->y - enemy->height / 2;
 		enemies.push_back(enemy);
+		space->addDynamicActor(enemy);
 		break;
 	}
 	case '1': {
 		player = new Player(x, y, game);
 		player->y = player->y - player->height / 2;
+		space->addDynamicActor(player);
 		break;
 	}
 	case '#': {
 		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
+		space->addStaticActor(tile);
 		break;
 	}
 	}

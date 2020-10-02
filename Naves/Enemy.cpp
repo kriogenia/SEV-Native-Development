@@ -27,7 +27,6 @@ void Enemy::update() {
 		animation = aDying;
 	} else {
 		vx = -1;
-		x = x + vx;
 	}
 
 }

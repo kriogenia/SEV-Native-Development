@@ -77,8 +77,6 @@ void Player::update() {
 	if (shootTime > 0) {
 		shootTime--;
 	}
-	x = x + vx;
-	y = y + vy;
 }
 
 void Player::draw(float scrollX) {

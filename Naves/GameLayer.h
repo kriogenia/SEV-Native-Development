@@ -1,13 +1,14 @@
 #pragma once
 
+#include "Audio.h"
 #include "Background.h"
 #include "Enemy.h"
 #include "Layer.h"
 #include "Player.h"
 #include "Projectile.h"
+#include "Space.h"
 #include "Text.h"
 #include "Tile.h"
-#include "Audio.h"
 
 #include <fstream>
 #include <list>
@@ -29,8 +30,9 @@ public:
 	void loadMapObject(char character, float x, float y);
 	void calculateScroll();
 
-	Player* player;
 	Background* background;
+	Player* player;
+	Space* space;
 
 	Actor* backgroundPoints;
 	Audio* audioBackground;
