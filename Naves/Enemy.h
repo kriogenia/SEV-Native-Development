@@ -9,7 +9,7 @@ public:
 	Enemy(float x, float y, Game* game);
 
 	void update();
-	void draw() override;
+	void draw(float scrollX = 0) override;
 	bool isOutOfRender() override;
 	void impacted();
 

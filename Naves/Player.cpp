@@ -81,8 +81,8 @@ void Player::update() {
 	y = y + vy;
 }
 
-void Player::draw() {
-	animation->draw(x, y);
+void Player::draw(float scrollX) {
+	animation->draw(x - scrollX, y);
 }
 
 void Player::moveX(float direction) {

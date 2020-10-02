@@ -7,6 +7,10 @@ GameLayer::GameLayer(Game* game)
 
 void GameLayer::init() {
 
+	scrollX = 0;
+	tiles.clear();
+	loadMap("res/0.txt");
+
 	points = 0;
 
 	delete background;
@@ -24,10 +28,8 @@ void GameLayer::init() {
 	textPoints->content = to_string(points);
 
 	enemies.clear();
-	tiles.clear();
 	projectiles.clear();
 
-	loadMap("res/0.txt");
 
 }
 
@@ -189,20 +191,26 @@ void GameLayer::update() {
 	deleteProjectiles.clear();
 }
 
+void GameLayer::calculateScroll() {
+	scrollX = player->x - 200;
+}
+
 void GameLayer::draw() {
+	calculateScroll();
+
 	background->draw();
 
 	for (auto const& tile : tiles) {
-		tile->draw();
+		tile->draw(scrollX);
 	}
 
-	player->draw();
+	player->draw(scrollX);
 
 	for (auto const& enemy : enemies) {
-		enemy->draw();
+		enemy->draw(scrollX);
 	}
 	for (auto const& projectile : projectiles) {
-		projectile->draw();
+		projectile->draw(scrollX);
 	}
 
 	textPoints->draw();

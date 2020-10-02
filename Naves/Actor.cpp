@@ -15,7 +15,7 @@ Actor::Actor(string filename, float x, float y, int width, int height, Game* gam
 Actor::~Actor() {
 }
 
-void Actor::draw() {
+void Actor::draw(float scrollX) {
 	SDL_Rect source;
 	source.x = 0;
 	source.y = 0;
@@ -23,7 +23,7 @@ void Actor::draw() {
 	source.h = fileHeight;
 
 	SDL_Rect destination;
-	destination.x = x - width / 2;
+	destination.x = x - width / 2 - scrollX;
 	destination.y = y - height / 2;
 	destination.w = width;
 	destination.h = height;

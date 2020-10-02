@@ -27,6 +27,7 @@ public:
 
 	void loadMap(string name);
 	void loadMapObject(char character, float x, float y);
+	void calculateScroll();
 
 	Player* player;
 	Background* background;
@@ -46,6 +47,7 @@ public:
 	int points = 0;
 
 	int mapWidth;
+	float scrollX;
 
 };
 
