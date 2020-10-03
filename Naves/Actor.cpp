@@ -33,7 +33,11 @@ void Actor::draw() {
 	SDL_RenderCopyEx(game->renderer, texture, &source, &destination, 0, nullptr, SDL_FLIP_NONE);
 }
 
-bool Actor::isOutOfRender() {
+bool Actor::isInRender() {
+	if ((x) - width / 2 <= WIDTH && (x) + width / 2 >= 0 &&
+		y - height / 2 <= HEIGHT && y + height / 2 >= 0) {
+		return true;
+	}
 	return false;
 }
 

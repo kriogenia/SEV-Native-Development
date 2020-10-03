@@ -19,4 +19,5 @@ void PowerUp::doEffect(Player* player, int* points) {
 			player->audioCoin->play();
 		}
 	}
+	PickUp::doEffect(player, points);
 }
