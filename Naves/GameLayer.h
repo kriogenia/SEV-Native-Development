@@ -2,6 +2,7 @@
 
 #include "Audio.h"
 #include "Background.h"
+#include "Bomb.h"
 #include "Coin.h"
 #include "Enemy.h"
 #include "EnemyProjectile.h"
@@ -34,6 +35,7 @@ public:
 	Text* textHealthPoints;
 	Text* textPoints;
 
+	list<Bomb*> bombs;
 	list<Enemy*> enemies;
 	list<EnemyProjectile*> enemyProjectiles;
 	list<PickUp*> pickUps;

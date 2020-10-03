@@ -19,10 +19,6 @@ void Enemy::draw() {
 	animation->draw(x, y);
 }
 
-bool Enemy::isOutOfRender() {
-	return x + width/2 <= 0;
-}
-
 EnemyProjectile* Enemy::autoshoot() {
 	if (shootTime <= 0) {
 		shootTime = shotCadence;

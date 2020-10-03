@@ -33,6 +33,7 @@ void GameLayer::init() {
 	enemies.push_back(new Enemy(300, 50, game));
 	enemies.push_back(new Enemy(300, 200, game));
 
+	bombs.clear();
 	enemyProjectiles.clear();
 	pickUps.clear();
 	projectiles.clear();
@@ -87,6 +88,7 @@ void GameLayer::update() {
 		int rY = (rand() % (300 - 60)) + 1 + 60;
 		enemies.push_back(new Enemy(rX, rY, game));
 		newEnemyTime = points*5 + 25 > 110 ? 25 : 110 - points*5;
+		cout << "New enemy spawned on " << rX << ", " << rY << endl;
 	}
 
 	// Item generation
@@ -97,25 +99,35 @@ void GameLayer::update() {
 		if (newItemTime <= 0 && points >= 10) {				// One of each three items is a PowerUp
 			pickUps.push_back(new PowerUp(rX, rY, game));	
 			newItemTime = 300;								// Resets the item generation
+			cout << "New PowerUp spawned on " << rX << ", " << rY << endl;
 		}
 		else {
 			if (player->hp < 3) {							// Below max health generates a Life
-				pickUps.push_back(new Life(rX, rY, game));	
+				pickUps.push_back(new Life(rX, rY, game));
+				cout << "New Life spawned on " << rX << ", " << rY << endl;
 			}
 			else {											// Otherwise a coin
-				pickUps.push_back(new Coin(rX, rY, game));	
+				pickUps.push_back(new Coin(rX, rY, game));
+				cout << "New Coin spawned on " << rX << ", " << rY << endl;
 			}
 		}
+	}
+
+	// Bomb generation (when the screen is enemy filled and each 150 ticks
+	if (enemies.size() > 10 && newItemTime % 150 == 0) {
+		int rX = (rand() % (WIDTH - 150)) + 1 + 25;
+		int rY = (rand() % (HEIGHT - 150)) + 1 + 25;
+		bombs.push_back(new Bomb(rX, rY, game));
+		cout << "New bomb spawned on " << rX << ", " << rY << endl;
 	}
 
 	// Actors update
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
-		if (!enemy->isOutOfRender() && enemy->x > player->x && enemy->x - player->x < 200) {
+		if (enemy->isInRender() && enemy->x > player->x && enemy->x - player->x < 200) {
 			auto projectile = enemy->autoshoot();
 			if (projectile != NULL) {
-				cout << "Enemy did shot from " << projectile->x << ", " << projectile->y << endl;
 				enemyProjectiles.push_back(projectile);
 			}
 		}
@@ -128,6 +140,7 @@ void GameLayer::update() {
 	}
 
 	// Deletions - Projectile, Enemy
+	list<Bomb*> deleteBombs;
 	list<Enemy*> deleteEnemies;
 	list<EnemyProjectile*> deleteEnemyProjectiles;
 	list<PickUp*> deletePickUps;
@@ -136,9 +149,7 @@ void GameLayer::update() {
 	// Collisions - Player, Enemy
 	for (auto const& enemy : enemies) {
 		if (player->isOverlap(enemy)) {
-			player->hp--;
-			player->audioDamage->play();
-			textHealthPoints->content = to_string(player->hp);
+			player->receiveDamage(textHealthPoints);
 			if (player->hp <= 0) {
 				init();
 				return;
@@ -148,8 +159,34 @@ void GameLayer::update() {
 				enemy) != deleteEnemies.end();
 			if (!eInList) {
 				deleteEnemies.push_back(enemy);
-				cout << "Enemy traveled out" << endl;
+				cout << "Enemy and player collision" << endl;
 			}
+		}
+	}
+
+	// Collisions - Player, Bomb
+	for (auto const& bomb : bombs) {
+		if (player->isOverlap(bomb)) {
+			// We kill all the enemies on screen
+			for (auto const& enemy : enemies) {
+				if (enemy->isInRender()) {
+					points++;
+					bool eInList = std::find(deleteEnemies.begin(),
+						deleteEnemies.end(),
+						enemy) != deleteEnemies.end();
+					if (!eInList) {
+						deleteEnemies.push_back(enemy);
+					}
+				}
+			}
+			player->audioDetonateBomb->play();
+			bool bInList = std::find(deleteBombs.begin(),
+				deleteBombs.end(),
+				bomb) != deleteBombs.end();
+			if (!bInList) {
+				deleteBombs.push_back(bomb);
+			}
+			cout << "Bomb detonated" << endl;
 		}
 	}
 
@@ -164,17 +201,14 @@ void GameLayer::update() {
 				deleteEnemyProjectiles.push_back(enemyProjectile);
 			}
 
-			player->hp--;
-			player->audioDamage->play();
-			textHealthPoints->content = to_string(player->hp);
-			cout << "Contact! - HP: " << player->hp << endl;
+			player->receiveDamage(textHealthPoints);
 			if (player->hp <= 0) {
 				init();
 				return;
 			}
 		}
 		// EnemyProjectile traveled out
-		if (enemyProjectile->isOutOfRender()) {
+		if (!enemyProjectile->isInRender()) {
 			bool pInList = std::find(deleteEnemyProjectiles.begin(),
 				deleteEnemyProjectiles.end(),
 				enemyProjectile) != deleteEnemyProjectiles.end();
@@ -205,7 +239,7 @@ void GameLayer::update() {
 	for (auto const& enemy : enemies) {
 
 		// Enemy traveledOut
-		if (enemy->isOutOfRender()) {
+		if (enemy->x + enemy->width / 2 <= 0) {
 			bool eInList = std::find(deleteEnemies.begin(),
 				deleteEnemies.end(),
 				enemy) != deleteEnemies.end();
@@ -246,7 +280,7 @@ void GameLayer::update() {
 	for (auto const& projectile : projectiles) {
 
 		// Projectile traveledOut
-		if (projectile->isOutOfRender()) {
+		if (!projectile->isInRender()) {
 			bool pInList = std::find(deleteProjectiles.begin(),
 				deleteProjectiles.end(),
 				projectile) != deleteProjectiles.end();
@@ -260,7 +294,13 @@ void GameLayer::update() {
 
 	}
 
-	// Deletion of enemies and projectiles
+	// Deletion of bombs, enemies, pickups and projectiles
+	for (auto const& delBomb : deleteBombs) {
+		bombs.remove(delBomb);
+		delete delBomb;
+	}
+	deleteBombs.clear();
+
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 		delete delEnemy;
@@ -292,6 +332,9 @@ void GameLayer::draw() {
 
 	for (auto const& pickUp : pickUps) {
 		pickUp->draw();
+	}
+	for (auto const& bomb : bombs) {
+		bomb->draw();
 	}
 	for (auto const& enemy : enemies) {
 		enemy->draw();

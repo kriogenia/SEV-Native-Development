@@ -8,7 +8,3 @@ EnemyProjectile::EnemyProjectile(float x, float y, Game* game)
 void EnemyProjectile::update() {
 	x = x + vx;
 }
-
-bool EnemyProjectile::isOutOfRender() {
-	return x <= 0;
-}

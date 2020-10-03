@@ -7,4 +7,5 @@ Coin::Coin(float x, float y, Game* game)
 void Coin::doEffect(Player* player, int* points) {
 	++* points;
 	player->audioCoin->play();
+	PickUp::doEffect(player, points);
 }

@@ -11,7 +11,7 @@ public:
 
 	void update();
 	void draw() override;
-	bool isOutOfRender() override;
+
 	EnemyProjectile* autoshoot();
 
 	Animation* aMoving;

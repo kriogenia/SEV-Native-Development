@@ -9,4 +9,5 @@ void Life::doEffect(Player* player, int* points) {
 		player->hp++;
 	}
 	player->audioLife->play();
+	PickUp::doEffect(player, points);
 }
