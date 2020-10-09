@@ -41,8 +41,25 @@ void GameLayer::init() {
 void GameLayer::processControls() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		keysToControls(event);
-		mouseToControls(event);
+		switch (event.type) {
+		case SDL_QUIT:
+			game->loopActive = false;
+		case SDL_MOUSEBUTTONDOWN:
+			game->input = GameInputType::MOUSE;
+			break;
+		case SDL_CONTROLLERBUTTONDOWN:
+		case SDL_CONTROLLERAXISMOTION:
+			game->input = GameInputType::GAMEPAD;
+			break;
+		case SDL_KEYDOWN:
+			game->input = GameInputType::KEYBOARD;
+			break;
+		}
+
+		if (game->input == GameInputType::KEYBOARD)
+			keysToControls(event);
+		if (game->input == GameInputType::MOUSE)
+			mouseToControls(event);
 	}
 
 	// Shooting
@@ -218,9 +235,11 @@ void GameLayer::draw() {
 	// HUD
 	textPoints->draw();
 	backgroundPoints->draw();
-	buttonJump->draw();
-	buttonShoot->draw();
-	pad->draw();
+	if (game->input == GameInputType::MOUSE) {
+		buttonJump->draw();
+		buttonShoot->draw();
+		pad->draw();
+	}
 
 	SDL_RenderPresent(game->renderer);
 }
@@ -283,9 +302,6 @@ void GameLayer::keysToControls(SDL_Event event) {
 			controlShoot = false;
 			break;
 		}
-	}
-	if (event.type == SDL_QUIT) {
-		game->loopActive = false;
 	}
 
 }
