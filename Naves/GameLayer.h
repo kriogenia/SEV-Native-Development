@@ -4,6 +4,7 @@
 #include "Background.h"
 #include "Enemy.h"
 #include "Layer.h"
+#include "Pad.h"
 #include "Player.h"
 #include "Projectile.h"
 #include "Space.h"
@@ -34,10 +35,11 @@ public:
 	Background* background;
 	Player* player;
 	Space* space;
+	Tile* cup;
 
 	Actor* buttonJump;
 	Actor* buttonShoot;
-	Tile* cup;
+	Pad* pad;
 
 	Actor* backgroundPoints;
 	Audio* audioBackground;
