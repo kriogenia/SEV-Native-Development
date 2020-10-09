@@ -12,8 +12,8 @@ void GameLayer::init() {
 	scrollX = 0;
 	tiles.clear();
 	enemies.clear();
-	projectiles.clear();
-	loadMap("res/0.txt");
+	projectiles.clear(); 
+	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 
 	points = 0;
 
@@ -68,6 +68,14 @@ void GameLayer::processControls() {
 }
 
 void GameLayer::update() {
+	// Level won
+	if (cup->isOverlap(player)) {
+		game->currentLevel++;
+		if (game->currentLevel > game->finalLevel) {
+			game->currentLevel = 0;
+		}
+		init();
+	}
 
 	if (player->y > HEIGHT + player->height) {
 		init();
@@ -200,6 +208,8 @@ void GameLayer::draw() {
 		projectile->draw(scrollX);
 	}
 
+	cup->draw(scrollX);
+
 	textPoints->draw();
 	backgroundPoints->draw();
 
@@ -323,7 +333,13 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		space->addStaticActor(tile);
 		break;
 	}
+	case 'C': {
+		cup = new Tile("res/copa.png", x, y, game);
+		// modification to start counting from floor
+		cup->y = cup->y - cup->height / 2;
+		space->addDynamicActor(cup);
+		break;
+	}
+
 	}
 }
-
-

@@ -33,6 +33,7 @@ public:
 	Background* background;
 	Player* player;
 	Space* space;
+	Tile* cup;
 
 	Actor* backgroundPoints;
 	Audio* audioBackground;
