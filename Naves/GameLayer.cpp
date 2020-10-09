@@ -9,6 +9,9 @@ void GameLayer::init() {
 
 	space = new Space(1);
 
+	buttonJump = new Actor("res/boton_salto.png", WIDTH * 0.9, HEIGHT * 0.55, 100, 100, game);
+	buttonShoot = new Actor("res/boton_disparo.png", WIDTH * 0.75, HEIGHT * 0.83, 100, 100, game);
+
 	scrollX = 0;
 	tiles.clear();
 	enemies.clear();
@@ -210,8 +213,11 @@ void GameLayer::draw() {
 
 	cup->draw(scrollX);
 
+	// HUD
 	textPoints->draw();
 	backgroundPoints->draw();
+	buttonJump->draw();
+	buttonShoot->draw();
 
 	SDL_RenderPresent(game->renderer);
 }

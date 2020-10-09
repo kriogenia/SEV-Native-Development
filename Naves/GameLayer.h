@@ -33,6 +33,9 @@ public:
 	Background* background;
 	Player* player;
 	Space* space;
+
+	Actor* buttonJump;
+	Actor* buttonShoot;
 	Tile* cup;
 
 	Actor* backgroundPoints;
