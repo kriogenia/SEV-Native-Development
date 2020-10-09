@@ -1,5 +1,6 @@
 #include "Game.h"
 #include "GameLayer.h"
+#include "MenuLayer.h"
 
 Game::Game() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
@@ -14,6 +15,8 @@ Game::Game() {
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
 	gameLayer = new GameLayer(this);
+	menuLayer = new MenuLayer(this);
+	layer = menuLayer;
 
 	TTF_Init();
 	font = TTF_OpenFont("res/sans.ttf", 24);
@@ -31,11 +34,11 @@ void Game::loop() {
 		initTick = SDL_GetTicks();
 
 		// Controls
-		gameLayer->processControls();
+		layer->processControls();
 		// Update elements
-		gameLayer->update();
+		layer->update();
 		// Draw
-		gameLayer->draw();
+		layer->draw();
 
 		endTick = SDL_GetTicks();
 		differenceTick = endTick - initTick;

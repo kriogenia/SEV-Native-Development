@@ -34,7 +34,10 @@ public:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	TTF_Font* font;
+
+	Layer* layer;
 	Layer* gameLayer;
+	Layer* menuLayer;
 
 	map<string, SDL_Texture*> mapTextures;
 
