@@ -25,6 +25,7 @@ public:
 	void update() override;
 	void draw() override;
 	void keysToControls(SDL_Event event);
+	void mouseToControls(SDL_Event event);
 
 	void loadMap(string name);
 	void loadMapObject(char character, float x, float y);

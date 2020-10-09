@@ -41,6 +41,7 @@ void GameLayer::processControls() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
 		keysToControls(event);
+		mouseToControls(event);
 	}
 
 	// Shooting
@@ -285,6 +286,38 @@ void GameLayer::keysToControls(SDL_Event event) {
 		game->loopActive = false;
 	}
 
+}
+
+void GameLayer::mouseToControls(SDL_Event event) {
+	float motionX = event.motion.x / game->scaleLower;
+	float motionY = event.motion.y / game->scaleLower;
+
+	if (event.type == SDL_MOUSEBUTTONDOWN) {
+		if (buttonShoot->containsPoint(motionX, motionY)) {
+			controlShoot = true;
+		}
+		if (buttonJump->containsPoint(motionX, motionY)) {
+			controlMoveY = -1;
+		}
+	}
+	if (event.type == SDL_MOUSEMOTION) {
+		if (buttonShoot->containsPoint(motionX, motionY) == false) {
+			controlShoot = false;
+		}
+		if (buttonJump->containsPoint(motionX, motionY) == false) {
+			controlMoveY = 0;
+		}
+
+	}
+	if (event.type == SDL_MOUSEBUTTONUP) {
+		if (buttonShoot->containsPoint(motionX, motionY)) {
+			controlShoot = false;
+		}
+		if (buttonJump->containsPoint(motionX, motionY)) {
+			controlMoveY = 0;
+		}
+
+	}
 
 }
 
