@@ -4,6 +4,7 @@
 #include "Background.h"
 #include "Enemy.h"
 #include "Layer.h"
+#include "MovingTile.h"
 #include "Pad.h"
 #include "Player.h"
 #include "Projectile.h"
@@ -46,6 +47,7 @@ public:
 	Text* textPoints;
 
 	list<Enemy*> enemies;
+	list<MovingTile*> movingTiles;
 	list<Tile*> tiles;
 	list<Projectile*> projectiles;
 

@@ -14,8 +14,9 @@ void GameLayer::init() {
 	pad = new Pad(WIDTH * 0.15, HEIGHT * 0.80, game);
 
 	scrollX = 0;
-	tiles.clear();
 	enemies.clear();
+	movingTiles.clear();
+	tiles.clear();
 	projectiles.clear(); 
 	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 
@@ -110,6 +111,9 @@ void GameLayer::update() {
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
+	}
+	for (auto const& tile : movingTiles) {
+		tile->update();
 	}
 	for (auto const& projectile : projectiles) {
 		projectile->update();
@@ -218,6 +222,9 @@ void GameLayer::draw() {
 	background->draw();
 
 	for (auto const& tile : tiles) {
+		tile->draw(scrollX);
+	}
+	for (auto const& tile : movingTiles) {
 		tile->draw(scrollX);
 	}
 
@@ -406,6 +413,14 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
 		tile->y = tile->y - tile->height / 2;
 		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'X': {
+		MovingTile* tile = new MovingTile("res/bloque_metal.png", x, y, game);
+		tile->y = tile->y - tile->height / 2;
+		movingTiles.push_back(tile);
+		space->addDynamicActor(tile);
 		space->addStaticActor(tile);
 		break;
 	}
