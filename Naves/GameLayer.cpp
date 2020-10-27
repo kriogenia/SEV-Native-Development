@@ -133,6 +133,7 @@ void GameLayer::update() {
 	// Deletions - Projectile, Enemy
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
+	list<Tile*> deleteTiles;
 
 	for (auto const& enemy : enemies) {
 
@@ -184,6 +185,28 @@ void GameLayer::update() {
 			continue;
 		}
 
+		// Collision - Projectile, Tile
+		for (auto const& tile : tiles) {
+			if (tile->isOverlap(projectile)) {
+				bool pInList = std::find(deleteProjectiles.begin(),
+					deleteProjectiles.end(),
+					projectile) != deleteProjectiles.end();
+
+				if (!pInList) {
+					deleteProjectiles.push_back(projectile);
+				}
+				if (tile->isDestructible) {
+					bool tInList = std::find(deleteTiles.begin(),
+						deleteTiles.end(),
+						tile) != deleteTiles.end();
+
+					if (!tInList) {
+						deleteTiles.push_back(tile);
+					}
+				}
+			}
+		}
+
 	}
 
 	// Deletion of enemies and projectiles
@@ -200,6 +223,13 @@ void GameLayer::update() {
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
+	for (auto const& delTile : deleteTiles) {
+		tiles.remove(delTile);
+		space->removeStaticActor(delTile);
+		delete delTile;
+	}
+	deleteTiles.clear();
 }
 
 void GameLayer::calculateScroll() {
@@ -412,6 +442,14 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	case '#': {
 		Tile* tile = new Tile("res/bloque_tierra.png", x, y, game);
 		tile->y = tile->y - tile->height / 2;
+		tiles.push_back(tile);
+		space->addStaticActor(tile);
+		break;
+	}
+	case 'U': {
+		Tile* tile = new Tile("res/bloque_caja.png", x, y, game);
+		tile->y = tile->y - tile->height / 2;
+		tile->isDestructible = true;
 		tiles.push_back(tile);
 		space->addStaticActor(tile);
 		break;
