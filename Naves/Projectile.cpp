@@ -1,7 +1,7 @@
 #include "Projectile.h"
 
-Projectile::Projectile(float x, float y, Game* game)
-	: Actor("res/disparo_jugador2.png", x, y, 20, 20, game) {
+Projectile::Projectile(string filename, float x, float y, int width, int height, Game* game)
+	: Actor(filename, x, y, width, height, game) {
 	vx = 9;
 	vy = -1;
 }

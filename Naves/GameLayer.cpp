@@ -19,6 +19,7 @@ void GameLayer::init() {
 	movingTiles.clear();
 	tiles.clear();
 	projectiles.clear(); 
+	enemyProjectiles.clear();
 	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 
 	points = 0;
@@ -119,11 +120,19 @@ void GameLayer::update() {
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
+		Projectile* projectile = enemy->doAction();
+		if (projectile != nullptr) {
+			enemyProjectiles.push_back(projectile);
+			space->addDynamicActor(projectile);
+		}
 	}
 	for (auto const& tile : movingTiles) {
 		tile->update();
 	}
 	for (auto const& projectile : projectiles) {
+		projectile->update();
+	}
+	for (auto const& projectile : enemyProjectiles) {
 		projectile->update();
 	}
 
@@ -142,6 +151,7 @@ void GameLayer::update() {
 	list<CollectibleItem*> deleteItems;
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
+	list<Projectile*> deleteEnemyProjectiles;
 	list<Tile*> deleteTiles;
 
 	for (auto const& enemy : enemies) {
@@ -233,6 +243,43 @@ void GameLayer::update() {
 
 	}
 
+	for (auto const& projectile : enemyProjectiles) {
+		// Collision EnemyProjectile and Player
+		if (player->isOverlap(projectile)) {
+			player->loseLife();
+			if (player->lifes <= 0) {
+				init();
+				return;
+			}
+		}
+
+		// Projectile traveledOut
+		if (!projectile->isInRender(scrollX) || projectile->vx == 0) {
+			bool pInList = std::find(deleteEnemyProjectiles.begin(),
+				deleteEnemyProjectiles.end(),
+				projectile) != deleteEnemyProjectiles.end();
+
+			if (!pInList) {
+				deleteEnemyProjectiles.push_back(projectile);
+				cout << "Projectile traveled out" << endl;
+			}
+			continue;
+		}
+
+		// Collision - Projectile, Tile
+		for (auto const& tile : tiles) {
+			if (tile->isOverlap(projectile)) {
+				bool pInList = std::find(deleteEnemyProjectiles.begin(),
+					deleteEnemyProjectiles.end(),
+					projectile) != deleteEnemyProjectiles.end();
+
+				if (!pInList) {
+					deleteEnemyProjectiles.push_back(projectile);
+				}
+			}
+		}
+	}
+
 	// Deletion of enemies, items and projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
@@ -253,6 +300,13 @@ void GameLayer::update() {
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
+	for (auto const& delProjectile : deleteEnemyProjectiles) {
+		enemyProjectiles.remove(delProjectile);
+		space->removeDynamicActor(delProjectile);
+		delete delProjectile;
+	}
+	deleteEnemyProjectiles.clear();
 
 	for (auto const& delTile : deleteTiles) {
 		tiles.remove(delTile);
@@ -296,6 +350,9 @@ void GameLayer::draw() {
 		enemy->draw(scrollX);
 	}
 	for (auto const& projectile : projectiles) {
+		projectile->draw(scrollX);
+	}
+	for (auto const& projectile : enemyProjectiles) {
 		projectile->draw(scrollX);
 	}
 

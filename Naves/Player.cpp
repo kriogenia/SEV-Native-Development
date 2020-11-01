@@ -161,7 +161,7 @@ Projectile* Player::shoot() {
 		aShootingLeft->currentFrame = 0;
 		aShootingRight->currentFrame = 0;
 
-		auto projectile = new Projectile(x, y, game);
+		auto projectile = new Projectile("res/disparo_jugador2.png", x, y, 20, 20, game);
 		if (orientation == game->orientationLeft) {
 			projectile->vx = projectile->vx * -1;
 		}

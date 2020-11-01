@@ -22,4 +22,6 @@ void Enemy::draw(float scrollX) {
 	animation->draw(x - scrollX, y);
 }
 
-void Enemy::doAction() {}
+Projectile* Enemy::doAction() {
+	return nullptr;
+}

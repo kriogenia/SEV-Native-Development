@@ -57,6 +57,7 @@ public:
 	list<MovingTile*> movingTiles;
 	list<Tile*> tiles;
 	list<Projectile*> projectiles;
+	list<Projectile*> enemyProjectiles;
 
 	bool controlShoot = false;
 	int controlMoveX = 0;

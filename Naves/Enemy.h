@@ -2,6 +2,7 @@
 
 #include "Actor.h"
 #include "Animation.h"
+#include "Projectile.h"
 
 class Enemy :
     public Actor
@@ -12,7 +13,7 @@ public:
 	virtual void update();
 	void draw(float scrollX = 0) override;
 	void impacted();
-	virtual void doAction();
+	virtual Projectile* doAction();
 
 	int state;
 	float vxIntelligence;
