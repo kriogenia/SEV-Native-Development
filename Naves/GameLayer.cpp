@@ -15,27 +15,36 @@ void GameLayer::init() {
 
 	scrollX = 0;
 	enemies.clear();
+	items.clear();
 	movingTiles.clear();
 	tiles.clear();
 	projectiles.clear(); 
+	enemyProjectiles.clear();
 	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 
 	points = 0;
+	collected = 0;
 
 	delete background;
 	background = new Background("res/fondo_2.png", WIDTH * 0.5, HEIGHT * 0.5, -1, game);
 
 	delete backgroundPoints;
 	backgroundPoints = new Actor("res/icono_puntos.png", WIDTH * 0.85, HEIGHT * 0.05, 24, 24, game);
+	delete backgroundItems;
+	backgroundItems = new Actor("res/icono_recolectable.png", WIDTH * 0.85, HEIGHT * 0.15, 40, 40, game);
 
 	delete audioBackground;
 	audioBackground = new Audio("res/musica_ambiente.mp3", true);
 	audioBackground->play();
+	delete audioItem;
+	audioItem = new Audio("res/efecto_moneda.wav", false);
 
 	delete textPoints;
-	textPoints = new Text("0", WIDTH * 0.92, HEIGHT * 0.04, game);
+	textPoints = new Text("0", WIDTH * 0.92, HEIGHT * 0.05, game);
 	textPoints->content = to_string(points);
-
+	delete textItems;
+	textItems = new Text("0", WIDTH * 0.92, HEIGHT * 0.15, game);
+	textItems->content = to_string(collected);
 
 }
 
@@ -111,11 +120,19 @@ void GameLayer::update() {
 	player->update();
 	for (auto const& enemy : enemies) {
 		enemy->update();
+		Projectile* projectile = enemy->doAction();
+		if (projectile != nullptr) {
+			enemyProjectiles.push_back(projectile);
+			space->addDynamicActor(projectile);
+		}
 	}
 	for (auto const& tile : movingTiles) {
 		tile->update();
 	}
 	for (auto const& projectile : projectiles) {
+		projectile->update();
+	}
+	for (auto const& projectile : enemyProjectiles) {
 		projectile->update();
 	}
 
@@ -131,8 +148,10 @@ void GameLayer::update() {
 	}
 
 	// Deletions - Projectile, Enemy
+	list<CollectibleItem*> deleteItems;
 	list<Enemy*> deleteEnemies;
 	list<Projectile*> deleteProjectiles;
+	list<Projectile*> deleteEnemyProjectiles;
 	list<Tile*> deleteTiles;
 
 	for (auto const& enemy : enemies) {
@@ -167,6 +186,21 @@ void GameLayer::update() {
 			if (!eInList) {
 				deleteEnemies.push_back(enemy);
 			}
+		}
+	}
+
+	for (auto const& item : items) {
+		if (player->isOverlap(item)) {
+			bool iInList = find(deleteItems.begin(),
+				deleteItems.end(), item) != deleteItems.end();
+			if (!iInList) {
+				deleteItems.push_back(item);
+			}
+
+			audioItem->play();
+			collected++;
+			textItems->content = to_string(collected);
+			cout << "Item collected. Items: " << collected << endl;
 		}
 	}
 
@@ -209,7 +243,44 @@ void GameLayer::update() {
 
 	}
 
-	// Deletion of enemies and projectiles
+	for (auto const& projectile : enemyProjectiles) {
+		// Collision EnemyProjectile and Player
+		if (player->isOverlap(projectile)) {
+			player->loseLife();
+			if (player->lifes <= 0) {
+				init();
+				return;
+			}
+		}
+
+		// Projectile traveledOut
+		if (!projectile->isInRender(scrollX) || projectile->vx == 0) {
+			bool pInList = std::find(deleteEnemyProjectiles.begin(),
+				deleteEnemyProjectiles.end(),
+				projectile) != deleteEnemyProjectiles.end();
+
+			if (!pInList) {
+				deleteEnemyProjectiles.push_back(projectile);
+				cout << "Projectile traveled out" << endl;
+			}
+			continue;
+		}
+
+		// Collision - Projectile, Tile
+		for (auto const& tile : tiles) {
+			if (tile->isOverlap(projectile)) {
+				bool pInList = std::find(deleteEnemyProjectiles.begin(),
+					deleteEnemyProjectiles.end(),
+					projectile) != deleteEnemyProjectiles.end();
+
+				if (!pInList) {
+					deleteEnemyProjectiles.push_back(projectile);
+				}
+			}
+		}
+	}
+
+	// Deletion of enemies, items and projectiles
 	for (auto const& delEnemy : deleteEnemies) {
 		enemies.remove(delEnemy);
 		space->removeDynamicActor(delEnemy);
@@ -217,12 +288,25 @@ void GameLayer::update() {
 	}
 	deleteEnemies.clear();
 
+	for (auto const& delItem : deleteItems) {
+		items.remove(delItem);
+		delete delItem;
+	}
+	deleteItems.clear();
+
 	for (auto const& delProjectile : deleteProjectiles) {
 		projectiles.remove(delProjectile);
 		space->removeDynamicActor(delProjectile);
 		delete delProjectile;
 	}
 	deleteProjectiles.clear();
+
+	for (auto const& delProjectile : deleteEnemyProjectiles) {
+		enemyProjectiles.remove(delProjectile);
+		space->removeDynamicActor(delProjectile);
+		delete delProjectile;
+	}
+	deleteEnemyProjectiles.clear();
 
 	for (auto const& delTile : deleteTiles) {
 		tiles.remove(delTile);
@@ -257,7 +341,9 @@ void GameLayer::draw() {
 	for (auto const& tile : movingTiles) {
 		tile->draw(scrollX);
 	}
-
+	for (auto const& item : items) {
+		item->draw(scrollX);
+	}
 	player->draw(scrollX);
 
 	for (auto const& enemy : enemies) {
@@ -266,12 +352,17 @@ void GameLayer::draw() {
 	for (auto const& projectile : projectiles) {
 		projectile->draw(scrollX);
 	}
+	for (auto const& projectile : enemyProjectiles) {
+		projectile->draw(scrollX);
+	}
 
 	cup->draw(scrollX);
 
 	// HUD
 	textPoints->draw();
+	textItems->draw();
 	backgroundPoints->draw();
+	backgroundItems->draw();
 	if (game->input == GameInputType::MOUSE) {
 		buttonJump->draw();
 		buttonShoot->draw();
@@ -427,7 +518,14 @@ void GameLayer::loadMapObject(char character, float x, float y)
 {
 	switch (character) {
 	case 'E': {
-		Enemy* enemy = new Enemy(x, y, game);
+		Enemy* enemy = new ShipEnemy(x, y, game);
+		enemy->y = enemy->y - enemy->height / 2;
+		enemies.push_back(enemy);
+		space->addDynamicActor(enemy);
+		break;
+	}
+	case 'T': {
+		Enemy* enemy = new TrunkEnemy(x, y, game);
 		enemy->y = enemy->y - enemy->height / 2;
 		enemies.push_back(enemy);
 		space->addDynamicActor(enemy);
@@ -460,6 +558,12 @@ void GameLayer::loadMapObject(char character, float x, float y)
 		movingTiles.push_back(tile);
 		space->addDynamicActor(tile);
 		space->addStaticActor(tile);
+		break;
+	}
+	case 'I': {
+		CollectibleItem* item = new CollectibleItem(x, y, game);
+		item->y = item->y - item->height / 2;
+		items.push_back(item);
 		break;
 	}
 	case 'C': {
