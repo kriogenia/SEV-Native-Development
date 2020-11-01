@@ -25,6 +25,12 @@
     <Filter Include="Archivos de encabezado\Actors">
       <UniqueIdentifier>{ae17053e-f38e-4c89-8920-1aa5244e7cea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Archivos de encabezado\Actors\Enemies">
+      <UniqueIdentifier>{6ab1a5b4-aa98-4fcd-b0a9-7797707d332f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Archivos de origen\Actors\Enemies">
+      <UniqueIdentifier>{4d72077e-04aa-41c1-b209-ed3bb971dcad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -46,9 +52,6 @@
       <Filter>Archivos de origen\Actors</Filter>
     </ClCompile>
     <ClCompile Include="Background.cpp">
-      <Filter>Archivos de origen\Actors</Filter>
-    </ClCompile>
-    <ClCompile Include="Enemy.cpp">
       <Filter>Archivos de origen\Actors</Filter>
     </ClCompile>
     <ClCompile Include="Projectile.cpp">
@@ -78,6 +81,18 @@
     <ClCompile Include="MovingTile.cpp">
       <Filter>Archivos de origen\Actors</Filter>
     </ClCompile>
+    <ClCompile Include="CollectibleItem.cpp">
+      <Filter>Archivos de origen\Actors</Filter>
+    </ClCompile>
+    <ClCompile Include="TrunkEnemy.cpp">
+      <Filter>Archivos de origen\Actors\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="ShipEnemy.cpp">
+      <Filter>Archivos de origen\Actors\Enemies</Filter>
+    </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Archivos de origen\Actors\Enemies</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -96,9 +111,6 @@
       <Filter>Archivos de encabezado\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Background.h">
-      <Filter>Archivos de encabezado\Actors</Filter>
-    </ClInclude>
-    <ClInclude Include="Enemy.h">
       <Filter>Archivos de encabezado\Actors</Filter>
     </ClInclude>
     <ClInclude Include="Projectile.h">
@@ -127,6 +139,18 @@
     </ClInclude>
     <ClInclude Include="MovingTile.h">
       <Filter>Archivos de encabezado\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="CollectibleItem.h">
+      <Filter>Archivos de encabezado\Actors</Filter>
+    </ClInclude>
+    <ClInclude Include="TrunkEnemy.h">
+      <Filter>Archivos de encabezado\Actors\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipEnemy.h">
+      <Filter>Archivos de encabezado\Actors\Enemies</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Archivos de encabezado\Actors\Enemies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
