@@ -2,6 +2,7 @@
 
 #include "Audio.h"
 #include "Background.h"
+#include "BatEnemy.h"
 #include "CollectibleItem.h"
 #include "Layer.h"
 #include "MovingTile.h"
