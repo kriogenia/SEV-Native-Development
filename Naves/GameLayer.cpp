@@ -2,6 +2,7 @@
 
 GameLayer::GameLayer(Game* game)
 	: Layer(game) {
+	collected = 0;
 	init();
 }
 
@@ -23,7 +24,6 @@ void GameLayer::init() {
 	loadMap("res/" + to_string(game->currentLevel) + ".txt");
 
 	points = 0;
-	collected = 0;
 
 	delete background;
 	background = new Background("res/fondo_2.png", WIDTH * 0.5, HEIGHT * 0.5, -1, game);
@@ -526,6 +526,13 @@ void GameLayer::loadMapObject(char character, float x, float y)
 	}
 	case 'T': {
 		Enemy* enemy = new TrunkEnemy(x, y, game);
+		enemy->y = enemy->y - enemy->height / 2;
+		enemies.push_back(enemy);
+		space->addDynamicActor(enemy);
+		break;
+	}
+	case 'B': {
+		Enemy* enemy = new BatEnemy(x, y, game);
 		enemy->y = enemy->y - enemy->height / 2;
 		enemies.push_back(enemy);
 		space->addDynamicActor(enemy);
